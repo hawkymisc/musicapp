@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 環境変数
+.env
+.env.*
+!.env.example
+
+# Firebase認証情報
+firebase-credentials.json
+
+# 仮想環境
+venv/
+ENV/
+
+# ログ
+*.log
+
+# Docker
+.docker/
+
+# IDE関連
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS特有
+.DS_Store
+Thumbs.db

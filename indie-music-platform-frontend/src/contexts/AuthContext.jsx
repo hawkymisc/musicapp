@@ -1,29 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut,
-  onAuthStateChanged,
-  updateProfile
-} from 'firebase/auth';
-import { getUserProfile, createUserProfile } from '../services/user';
-
-// Firebase設定
-// 実際の使用時はこの情報を環境変数に保存すること
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "your-project-id.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project-id.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-
-// Firebaseの初期化
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import authService from '../services/auth';
+import { getUserProfile } from '../services/user';
 
 export const AuthContext = createContext();
 
@@ -31,57 +8,46 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // 初期化時に現在のユーザー情報を取得
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        try {
-          // バックエンドからユーザープロフィールを取得
-          const userProfile = await getUserProfile(firebaseUser.uid);
-          setUser({
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            displayName: firebaseUser.displayName || userProfile.displayName,
-            type: userProfile.userType, // 'artist' または 'listener'
-            profileImage: userProfile.profileImage,
-            ...userProfile
-          });
-        } catch (error) {
-          console.error('Error fetching user profile:', error);
-          setUser({
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            displayName: firebaseUser.displayName,
-          });
+    const initAuth = async () => {
+      try {
+        // ローカルストレージにトークンがあれば現在のユーザー情報を取得
+        if (localStorage.getItem('authToken')) {
+          const currentUser = await authService.getCurrentUser();
+          if (currentUser) {
+            setUser(currentUser);
+          }
         }
-      } else {
-        setUser(null);
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        // エラー時はトークンを削除
+        localStorage.removeItem('authToken');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    };
 
-    return () => unsubscribe();
+    initAuth();
   }, []);
 
   const register = async (email, password, displayName, userType) => {
     try {
-      // Firebase認証でユーザー作成
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      
-      // ユーザー表示名を更新
-      await updateProfile(userCredential.user, { displayName });
-      
-      // バックエンドにユーザープロフィールを作成
-      await createUserProfile({
-        id: userCredential.user.uid,
+      const userData = {
         email,
+        password,
         displayName,
         userType,
-        profileImage: '',
-        createdAt: new Date().toISOString(),
-        isVerified: false
-      });
+        profileImage: ''
+      };
       
-      return userCredential.user;
+      const result = await authService.register(userData);
+      
+      // トークンをローカルストレージに保存
+      localStorage.setItem('authToken', result.token);
+      setUser(result.user);
+      
+      return result.user;
     } catch (error) {
       console.error('Registration error:', error);
       throw error;
@@ -90,8 +56,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      return userCredential.user;
+      const result = await authService.login(email, password);
+      
+      // トークンをローカルストレージに保存
+      localStorage.setItem('authToken', result.token);
+      setUser(result.user);
+      
+      return result.user;
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -100,7 +71,9 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await signOut(auth);
+      await authService.logout();
+      // ローカルストレージからトークンを削除
+      localStorage.removeItem('authToken');
       setUser(null);
     } catch (error) {
       console.error('Logout error:', error);

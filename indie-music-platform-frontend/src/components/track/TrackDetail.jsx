@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import { FaPlay, FaPause, FaShoppingCart, FaDownload, FaUser, FaMusic } from 'react-icons/fa';
 import { AuthContext } from '../../contexts/AuthContext';
 import { PlayerContext } from '../../contexts/PlayerContext';
-import { getTrackById, purchaseTrack, checkPurchaseStatus } from '../../services/track';
+import { getTrackById } from '../../services/track'; // 楽曲情報取得のみインポート
+import { purchaseTrack, checkPurchaseStatus } from '../../services/payment'; // 購入機能はpayment.jsからインポート
 import { loadStripe } from '@stripe/stripe-js';
 import Header from '../layout/Header';
 import Player from '../player/Player';

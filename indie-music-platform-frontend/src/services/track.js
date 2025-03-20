@@ -1,5 +1,5 @@
-// src/services/track.js
 import apiClient from './api';
+import paymentService from './payment';
 
 // 新着楽曲を取得
 export const getNewReleases = async (limit = 8) => {
@@ -35,17 +35,11 @@ export const uploadTrack = async (formData) => {
   return response.data.id;
 };
 
-// 楽曲購入
-export const purchaseTrack = async (userId, trackId) => {
-  const response = await apiClient.post('/purchases', { userId, trackId });
-  return response.data;
-};
+// 楽曲購入（payment.jsを呼び出す）
+export const purchaseTrack = paymentService.purchaseTrack;
 
-// 購入済みかチェック
-export const checkPurchaseStatus = async (userId, trackId) => {
-  const response = await apiClient.get(`/purchases/check`, { params: { userId, trackId } });
-  return response.data.purchased;
-};
+// 購入済みかチェック（payment.jsを呼び出す）
+export const checkPurchaseStatus = paymentService.checkPurchaseStatus;
 
 // 再生カウント記録
 export const recordPlay = async (trackId) => {

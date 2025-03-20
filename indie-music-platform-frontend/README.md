@@ -7,7 +7,9 @@ React (vite)
 ## Structure
 
 ```[tree]
-./src/
+
+indie-music-platform-frontend/
+└ src/
   ├── assets/            # 画像、アイコンなどの静的ファイル
   ├── components/        # 再利用可能なUIコンポーネント
   │   ├── common/        # ボタン、入力フィールドなどの共通コンポーネント
@@ -24,8 +26,10 @@ React (vite)
   ├── services/          # API通信などのサービス
   │   ├── api.js         # APIクライアント設定
   │   ├── auth.js        # 認証関連サービス
+  │   ├── artist.js      # アーティスト関連サービス
   │   ├── track.js       # 楽曲関連サービス
-  │   └── payment.js     # 決済関連サービス
+  │   ├── payment.js     # 決済関連サービス
+  │   └── user.js        # ユーザー関連サービス
   ├── utils/             # ユーティリティ関数
   ├── App.jsx            # ルート・アプリケーションコンポーネント
   ├── main.jsx           # エントリーポイント（Vite標準）

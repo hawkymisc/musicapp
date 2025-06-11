@@ -1,3 +1,15 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from typing import List, Dict, Any
+
+from app.db.session import get_db
+from app.models.user import User
+from app.core.security import get_current_user
+from app.schemas.purchase import Purchase, PurchaseCreate, PurchaseWithDetails
+from app.services import purchase_service
+
+router = APIRouter()
+
 @router.get("/{purchase_id}", response_model=PurchaseWithDetails)
 async def get_purchase(
     purchase_id: str,
@@ -29,5 +41,3 @@ async def download_purchased_track(
         user_id=current_user.id
     )
     return {"download_url": url}
-
-

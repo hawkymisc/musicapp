@@ -1,0 +1,31 @@
+2025-03-30 00:05:43,443 - server_test - INFO - Python Version: 3.11.10 (main, Sep 25 2024, 14:54:38) [Clang 15.0.0 (clang-1500.3.9.4)]
+2025-03-30 00:05:43,443 - server_test - INFO - Python Path: /Users/hwaka/Projects/musicapp/indie-music-platform-backend/.venv/bin/python
+2025-03-30 00:05:43,443 - server_test - INFO - Working Directory: /Users/hwaka/Projects/musicapp/indie-music-platform-backend
+2025-03-30 00:05:43,443 - server_test - INFO - 環境変数を設定しました
+2025-03-30 00:05:43,443 - server_test - INFO - Firebaseモジュールのモック化
+2025-03-30 00:05:43,443 - server_test - INFO - FastAPIとuvicornのインポート
+2025-03-30 00:05:43,535 - server_test - INFO - uvicorn.run()を呼び出します...
+2025-03-30 00:05:43,535 - server_test - INFO - 引数: app=<fastapi.applications.FastAPI object at 0x1024f5050>, host=127.0.0.1, port=8000, log_level=debug
+2025-03-30 00:05:43,536 - server_test - INFO - uvicorn.Config クラスの検査:
+2025-03-30 00:05:43,543 - server_test - INFO - Config クラス定義: class Config:
+    def __init__(
+        self,
+        app: Union["ASGIApplication", Callable, str],
+        host: str = "127.0.0.1",
+        port: int = 8000,
+        uds: Optional[str] = None,
+      ...
+2025-03-30 00:05:43,543 - server_test - INFO - uvicorn.Config インスタンスの作成
+2025-03-30 00:05:43,543 - server_test - INFO - Config インスタンス: <uvicorn.config.Config object at 0x1032036d0>
+2025-03-30 00:05:43,543 - server_test - INFO - uvicorn.Server インスタンスの作成
+2025-03-30 00:05:43,543 - server_test - INFO - Server インスタンス: <uvicorn.server.Server object at 0x103769f10>
+2025-03-30 00:05:43,543 - server_test - INFO - server.run() の呼び出し
+2025-03-30 00:05:43,543 - asyncio - DEBUG - Using selector: KqueueSelector
+INFO:     Started server process [85239]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [85239]

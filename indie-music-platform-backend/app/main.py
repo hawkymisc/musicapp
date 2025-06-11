@@ -49,6 +49,11 @@ app.add_middleware(
 # APIルーターのマウント
 app.include_router(api_router, prefix="/api")
 
+# 直接のテストエンドポイント（トラブルシューティング用）
+@app.get("/direct-test")
+async def direct_test_endpoint():
+    return {"message": "直接のテストエンドポイントが動作しています"}
+
 # 例外ハンドラー
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):

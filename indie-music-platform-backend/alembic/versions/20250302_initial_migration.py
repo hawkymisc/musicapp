@@ -1,4 +1,25 @@
-# alembic/versions/20250302_initial_migration.py（続き）
+"""初期マイグレーション
+
+Revision ID: 20250302_initial_migration
+Revises: 
+Create Date: 2025-03-02 12:00:00.000000
+
+"""
+from alembic import op
+import sqlalchemy as sa
+from enum import Enum as PyEnum
+from app.schemas.user import UserRole
+from app.models.purchase import PaymentMethod as PaymentMethodEnum
+from app.models.purchase import PurchaseStatus as PurchaseStatusEnum
+
+
+# revision identifiers, used by Alembic.
+revision = '20250302_initial_migration'
+down_revision = None
+branch_labels = None
+depends_on = None
+
+
 def upgrade():
     # ユーザーテーブルの作成
     op.create_table(
@@ -8,7 +29,7 @@ def upgrade():
         sa.Column('firebase_uid', sa.String(), nullable=False, unique=True, index=True),
         sa.Column('display_name', sa.String(), nullable=False),
         sa.Column('profile_image', sa.String(), nullable=True),
-        sa.Column('user_role', sa.Enum(UserRoleEnum), nullable=False, default=UserRoleEnum.LISTENER),
+        sa.Column('user_role', sa.Enum(UserRole), nullable=False, default=UserRole.LISTENER),
         sa.Column('is_verified', sa.Boolean(), default=False, nullable=False),
         sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
         sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.func.now(), onupdate=sa.func.now(), nullable=False)

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // APIクライアントのベース設定
 const apiClient = axios.create({
-  baseURL: '/api/v1',  // 実際の環境に合わせてベースURLを設定
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api/v1',  // 環境変数から取得
   headers: {
     'Content-Type': 'application/json'
   }

@@ -25,16 +25,16 @@ def get_tracks(
     楽曲一覧を取得
     """
     query = db.query(
-        Track.id,
-        Track.title,
-        Track.artist_id,
+        Track.id.label("track_id"),  # 列エイリアスを修正
+        Track.title.label("track_title"),
+        Track.artist_id.label("track_artist_id"),
         User.display_name.label("artist_name"),
-        Track.cover_art_url,
-        Track.duration,
-        Track.price,
-        Track.genre,
-        Track.release_date,
-        Track.play_count
+        Track.cover_art_url.label("track_cover_art_url"),
+        Track.duration.label("track_duration"),
+        Track.price.label("track_price"),
+        Track.genre.label("track_genre"),
+        Track.release_date.label("track_release_date"),
+        Track.play_count.label("track_play_count")
     ).join(User, Track.artist_id == User.id)\
     .filter(Track.is_public == True)
     
@@ -76,7 +76,23 @@ def get_tracks(
     query = query.offset(skip).limit(limit)
     
     # 結果を辞書形式で取得
-    results = [dict(row) for row in query.all()]
+    rows = query.all()
+    results = []
+    for row in rows:
+        # rowの属性を使って辞書を作成
+        result_dict = {
+            "track_id": row.track_id,
+            "track_title": row.track_title,
+            "track_artist_id": row.track_artist_id,
+            "artist_name": row.artist_name,
+            "track_cover_art_url": row.track_cover_art_url,
+            "track_duration": row.track_duration,
+            "track_price": float(row.track_price) if row.track_price else None,
+            "track_genre": row.track_genre,
+            "track_release_date": row.track_release_date.isoformat() if row.track_release_date else None,
+            "track_play_count": row.track_play_count
+        }
+        results.append(result_dict)
     return results
 
 
@@ -218,16 +234,16 @@ def get_artist_tracks(db: Session, artist_id: str, skip: int = 0, limit: int = 1
     アーティストの楽曲一覧を取得
     """
     query = db.query(
-        Track.id,
-        Track.title,
-        Track.artist_id,
+        Track.id.label("track_id"),
+        Track.title.label("track_title"),
+        Track.artist_id.label("track_artist_id"),
         User.display_name.label("artist_name"),
-        Track.cover_art_url,
-        Track.duration,
-        Track.price,
-        Track.genre,
-        Track.release_date,
-        Track.play_count
+        Track.cover_art_url.label("track_cover_art_url"),
+        Track.duration.label("track_duration"),
+        Track.price.label("track_price"),
+        Track.genre.label("track_genre"),
+        Track.release_date.label("track_release_date"),
+        Track.play_count.label("track_play_count")
     ).join(User, Track.artist_id == User.id)\
     .filter(Track.artist_id == artist_id, Track.is_public == True)\
     .order_by(desc(Track.release_date))\
@@ -243,16 +259,16 @@ def search_tracks(db: Session, query: str, skip: int = 0, limit: int = 100) -> L
     """
     search_term = f"%{query}%"
     query = db.query(
-        Track.id,
-        Track.title,
-        Track.artist_id,
+        Track.id.label("track_id"),
+        Track.title.label("track_title"),
+        Track.artist_id.label("track_artist_id"),
         User.display_name.label("artist_name"),
-        Track.cover_art_url,
-        Track.duration,
-        Track.price,
-        Track.genre,
-        Track.release_date,
-        Track.play_count
+        Track.cover_art_url.label("track_cover_art_url"),
+        Track.duration.label("track_duration"),
+        Track.price.label("track_price"),
+        Track.genre.label("track_genre"),
+        Track.release_date.label("track_release_date"),
+        Track.play_count.label("track_play_count")
     ).join(User, Track.artist_id == User.id)\
     .filter(
         Track.is_public == True,

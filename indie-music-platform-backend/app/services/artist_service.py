@@ -1,3 +1,16 @@
+from sqlalchemy.orm import Session
+from sqlalchemy.sql import func, desc
+from fastapi import HTTPException
+from datetime import datetime, date, timedelta
+from typing import Dict, Any, List, Optional
+
+from app.models.user import User, UserRole
+from app.models.track import Track
+from app.models.purchase import Purchase, PurchaseStatus
+from app.models.play_history import PlayHistory
+from starlette.status import HTTP_404_NOT_FOUND
+
+
 def get_user_profile(db: Session, user_id: str) -> User:
     """
     ユーザープロフィールを取得
@@ -214,5 +227,3 @@ def get_artist_stats(
     }
     
     return result
-
-

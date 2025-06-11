@@ -3,12 +3,7 @@ from sqlalchemy.orm import relationship
 from app.models.base import Base
 import uuid
 from enum import Enum as PyEnum
-
-
-class UserRole(PyEnum):
-    ARTIST = "artist"
-    LISTENER = "listener"
-    ADMIN = "admin"
+from app.schemas.user import UserRole
 
 
 class User(Base):

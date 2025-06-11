@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from app.models.user import User, UserRole
-from app.schemas.user import UserCreate, UserUpdate
+from app.models.user import User
+from app.schemas.user import UserCreate, UserUpdate, UserRole
 from fastapi import HTTPException
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 

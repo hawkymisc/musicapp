@@ -1,0 +1,27 @@
+2025-03-30 22:06:04,304 - test_startup - INFO - Python Version: 3.11.10 (main, Sep 25 2024, 14:54:38) [Clang 15.0.0 (clang-1500.3.9.4)]
+2025-03-30 22:06:04,304 - test_startup - INFO - Working Directory: /Users/hwaka/Projects/musicapp/indie-music-platform-backend
+2025-03-30 22:06:04,304 - test_startup - INFO - sys.path: ['/Users/hwaka/Projects/musicapp/indie-music-platform-backend', '/usr/local/var/pyenv/versions/3.11.10/lib/python311.zip', '/usr/local/var/pyenv/versions/3.11.10/lib/python3.11', '/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/lib-dynload', '/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages']
+2025-03-30 22:06:04,304 - test_startup - INFO - 環境変数を設定しました:
+2025-03-30 22:06:04,304 - test_startup - INFO -   TESTING=True
+2025-03-30 22:06:04,304 - test_startup - INFO -   DATABASE_URL=sqlite:///./dev.db
+2025-03-30 22:06:04,304 - test_startup - INFO -   AWS_REGION=ap-northeast-1
+2025-03-30 22:06:04,304 - test_startup - INFO -   FIREBASE_CREDENTIALS_PATH=/Users/hwaka/Projects/musicapp/indie-music-platform-backend/tests/mocks/firebase_credentials.json
+2025-03-30 22:06:04,304 - test_startup - INFO - AWS/Firebase関連モジュールをモック化します...
+2025-03-30 22:06:04,304 - test_startup - INFO - アプリケーションをインポートします...
+すべてのAPIルーターが正常に登録されました
+2025-03-30 22:06:04,812 - test_startup - INFO - アプリケーションインポート成功
+2025-03-30 22:06:04,812 - test_startup - INFO - Uvicornサーバーを設定します...
+2025-03-30 22:06:04,812 - test_startup - INFO - 開発サーバーを起動します...
+💻 バックエンドサーバーが http://127.0.0.1:8000 で起動しました
+Ctrl+Cで終了します
+2025-03-30 22:06:04,813 - asyncio - DEBUG - Using selector: KqueueSelector
+INFO:     Started server process [10122]
+INFO:     Waiting for application startup.
+2025-03-30 22:06:04,818 - app.main - INFO - アプリケーションを起動しています...
+2025-03-30 22:06:04,818 - app.db.session - INFO - データベーステーブルが正常に作成されました
+2025-03-30 22:06:04,818 - app.main - INFO - アプリケーションが正常に起動しました
+INFO:     Application startup complete.
+ERROR:    [Errno 48] error while attempting to bind on address ('127.0.0.1', 8000): address already in use
+INFO:     Waiting for application shutdown.
+2025-03-30 22:06:04,818 - app.main - INFO - アプリケーションを終了しています...
+INFO:     Application shutdown complete.

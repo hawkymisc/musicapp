@@ -1,0 +1,317 @@
+2025-03-30 22:29:15,302 - app.api.router - INFO - APIモジュールをインポートしています...
+2025-03-30 22:29:15,533 - botocore.hooks - DEBUG - Changing event name from creating-client-class.iot-data to creating-client-class.iot-data-plane
+2025-03-30 22:29:15,534 - botocore.hooks - DEBUG - Changing event name from before-call.apigateway to before-call.api-gateway
+2025-03-30 22:29:15,534 - botocore.hooks - DEBUG - Changing event name from request-created.machinelearning.Predict to request-created.machine-learning.Predict
+2025-03-30 22:29:15,534 - botocore.hooks - DEBUG - Changing event name from before-parameter-build.autoscaling.CreateLaunchConfiguration to before-parameter-build.auto-scaling.CreateLaunchConfiguration
+2025-03-30 22:29:15,534 - botocore.hooks - DEBUG - Changing event name from before-parameter-build.route53 to before-parameter-build.route-53
+2025-03-30 22:29:15,534 - botocore.hooks - DEBUG - Changing event name from request-created.cloudsearchdomain.Search to request-created.cloudsearch-domain.Search
+2025-03-30 22:29:15,535 - botocore.hooks - DEBUG - Changing event name from docs.*.autoscaling.CreateLaunchConfiguration.complete-section to docs.*.auto-scaling.CreateLaunchConfiguration.complete-section
+2025-03-30 22:29:15,535 - botocore.hooks - DEBUG - Changing event name from before-parameter-build.logs.CreateExportTask to before-parameter-build.cloudwatch-logs.CreateExportTask
+2025-03-30 22:29:15,535 - botocore.hooks - DEBUG - Changing event name from docs.*.logs.CreateExportTask.complete-section to docs.*.cloudwatch-logs.CreateExportTask.complete-section
+2025-03-30 22:29:15,536 - botocore.hooks - DEBUG - Changing event name from before-parameter-build.cloudsearchdomain.Search to before-parameter-build.cloudsearch-domain.Search
+2025-03-30 22:29:15,536 - botocore.hooks - DEBUG - Changing event name from docs.*.cloudsearchdomain.Search.complete-section to docs.*.cloudsearch-domain.Search.complete-section
+2025-03-30 22:29:15,536 - botocore.utils - DEBUG - IMDS ENDPOINT: http://169.254.169.254/
+2025-03-30 22:29:15,539 - botocore.credentials - DEBUG - Looking for credentials via: env
+2025-03-30 22:29:15,539 - botocore.credentials - DEBUG - Looking for credentials via: assume-role
+2025-03-30 22:29:15,539 - botocore.credentials - DEBUG - Looking for credentials via: assume-role-with-web-identity
+2025-03-30 22:29:15,539 - botocore.credentials - DEBUG - Looking for credentials via: sso
+2025-03-30 22:29:15,539 - botocore.credentials - DEBUG - Looking for credentials via: shared-credentials-file
+2025-03-30 22:29:15,539 - botocore.credentials - DEBUG - Looking for credentials via: custom-process
+2025-03-30 22:29:15,539 - botocore.credentials - DEBUG - Looking for credentials via: config-file
+2025-03-30 22:29:15,539 - botocore.credentials - DEBUG - Looking for credentials via: ec2-credentials-file
+2025-03-30 22:29:15,539 - botocore.credentials - DEBUG - Looking for credentials via: boto-config
+2025-03-30 22:29:15,539 - botocore.credentials - DEBUG - Looking for credentials via: container-role
+2025-03-30 22:29:15,539 - botocore.credentials - DEBUG - Looking for credentials via: iam-role
+2025-03-30 22:29:15,540 - urllib3.connectionpool - DEBUG - Starting new HTTP connection (1): 169.254.169.254:80
+2025-03-30 22:29:16,541 - botocore.utils - DEBUG - Caught retryable HTTP exception while making metadata service request to http://169.254.169.254/latest/api/token: Connect timeout on endpoint URL: "http://169.254.169.254/latest/api/token"
+Traceback (most recent call last):
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connection.py", line 199, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+TimeoutError: timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/httpsession.py", line 464, in send
+    urllib_response = conn.urlopen(
+                      ^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connectionpool.py", line 843, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/util/retry.py", line 449, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/util/util.py", line 39, in reraise
+    raise value
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connectionpool.py", line 789, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connectionpool.py", line 495, in _make_request
+    conn.request(
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/awsrequest.py", line 96, in request
+    rval = super().request(method, url, body, headers, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connection.py", line 441, in request
+    self.endheaders()
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/http/client.py", line 1298, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/awsrequest.py", line 123, in _send_output
+    self.send(msg)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/awsrequest.py", line 223, in send
+    return super().send(str)
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/http/client.py", line 996, in send
+    self.connect()
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connection.py", line 279, in connect
+    self.sock = self._new_conn()
+                ^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connection.py", line 208, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<botocore.awsrequest.AWSHTTPConnection object at 0x107407750>, 'Connection to 169.254.169.254 timed out. (connect timeout=1)')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/utils.py", line 454, in _fetch_metadata_token
+    response = self._session.send(request.prepare())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/httpsession.py", line 499, in send
+    raise ConnectTimeoutError(endpoint_url=request.url, error=e)
+botocore.exceptions.ConnectTimeoutError: Connect timeout on endpoint URL: "http://169.254.169.254/latest/api/token"
+2025-03-30 22:29:16,547 - urllib3.connectionpool - DEBUG - Starting new HTTP connection (2): 169.254.169.254:80
+2025-03-30 22:29:17,548 - botocore.utils - DEBUG - Caught retryable HTTP exception while making metadata service request to http://169.254.169.254/latest/meta-data/iam/security-credentials/: Connect timeout on endpoint URL: "http://169.254.169.254/latest/meta-data/iam/security-credentials/"
+Traceback (most recent call last):
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connection.py", line 199, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+TimeoutError: timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/httpsession.py", line 464, in send
+    urllib_response = conn.urlopen(
+                      ^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connectionpool.py", line 843, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/util/retry.py", line 449, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/util/util.py", line 39, in reraise
+    raise value
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connectionpool.py", line 789, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connectionpool.py", line 495, in _make_request
+    conn.request(
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/awsrequest.py", line 96, in request
+    rval = super().request(method, url, body, headers, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connection.py", line 441, in request
+    self.endheaders()
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/http/client.py", line 1298, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/awsrequest.py", line 123, in _send_output
+    self.send(msg)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/awsrequest.py", line 223, in send
+    return super().send(str)
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/http/client.py", line 996, in send
+    self.connect()
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connection.py", line 279, in connect
+    self.sock = self._new_conn()
+                ^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/urllib3/connection.py", line 208, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<botocore.awsrequest.AWSHTTPConnection object at 0x1074be110>, 'Connection to 169.254.169.254 timed out. (connect timeout=1)')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/utils.py", line 509, in _get_request
+    response = self._session.send(request.prepare())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/httpsession.py", line 499, in send
+    raise ConnectTimeoutError(endpoint_url=request.url, error=e)
+botocore.exceptions.ConnectTimeoutError: Connect timeout on endpoint URL: "http://169.254.169.254/latest/meta-data/iam/security-credentials/"
+2025-03-30 22:29:17,549 - botocore.utils - DEBUG - Max number of attempts exceeded (1) when attempting to retrieve data from metadata service.
+2025-03-30 22:29:17,552 - botocore.loaders - DEBUG - Loading JSON file: /usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/data/endpoints.json
+2025-03-30 22:29:17,560 - botocore.loaders - DEBUG - Loading JSON file: /usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/data/sdk-default-configuration.json
+2025-03-30 22:29:17,560 - botocore.hooks - DEBUG - Event choose-service-name: calling handler <function handle_service_name_alias at 0x107338ea0>
+2025-03-30 22:29:17,591 - botocore.loaders - DEBUG - Loading JSON file: /usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/data/s3/2006-03-01/service-2.json.gz
+2025-03-30 22:29:17,610 - botocore.loaders - DEBUG - Loading JSON file: /usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/data/s3/2006-03-01/service-2.sdk-extras.json
+2025-03-30 22:29:17,620 - botocore.loaders - DEBUG - Loading JSON file: /usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/data/s3/2006-03-01/endpoint-rule-set-1.json.gz
+2025-03-30 22:29:17,621 - botocore.loaders - DEBUG - Loading JSON file: /usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/data/partitions.json
+2025-03-30 22:29:17,622 - botocore.hooks - DEBUG - Event creating-client-class.s3: calling handler <function add_generate_presigned_post at 0x1072be660>
+2025-03-30 22:29:17,622 - botocore.hooks - DEBUG - Event creating-client-class.s3: calling handler <function lazy_call.<locals>._handler at 0x106f26de0>
+2025-03-30 22:29:17,630 - botocore.hooks - DEBUG - Event creating-client-class.s3: calling handler <function add_generate_presigned_url at 0x1072be3e0>
+2025-03-30 22:29:17,630 - botocore.configprovider - DEBUG - Looking for endpoint for s3 via: environment_service
+2025-03-30 22:29:17,630 - botocore.configprovider - DEBUG - Looking for endpoint for s3 via: environment_global
+2025-03-30 22:29:17,630 - botocore.configprovider - DEBUG - Looking for endpoint for s3 via: config_service
+2025-03-30 22:29:17,630 - botocore.configprovider - DEBUG - Looking for endpoint for s3 via: config_global
+2025-03-30 22:29:17,630 - botocore.configprovider - DEBUG - No configured endpoint found.
+2025-03-30 22:29:17,631 - botocore.endpoint - DEBUG - Setting s3 timeout as (60, 60)
+2025-03-30 22:29:17,631 - botocore.loaders - DEBUG - Loading JSON file: /usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/botocore/data/_retry.json
+2025-03-30 22:29:17,632 - botocore.client - DEBUG - Registering retry handlers for service: s3
+2025-03-30 22:29:17,632 - botocore.utils - DEBUG - Registering S3 region redirector handler
+2025-03-30 22:29:17,632 - botocore.utils - DEBUG - Registering S3Express Identity Resolver
+2025-03-30 22:29:17,881 - app.api.router - INFO - 各モジュールのルーターを登録しています...
+2025-03-30 22:29:17,885 - app.api.router - INFO - すべてのAPIルーターが正常に登録されました
+2025-03-30 22:29:17,890 - app.api.router - INFO - v1ルーターがapi_routerにマウントされました: prefix='/v1'
+2025-03-30 22:29:17,890 - test_server_simple - INFO - APIルーターの状態: <fastapi.routing.APIRouter object at 0x1046dad50>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - 登録されているルート数: 23
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/test, メソッド: {'GET'}, エンドポイント: <function test_endpoint at 0x1046d51c0>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/debug, メソッド: {'GET'}, エンドポイント: <function debug_endpoint at 0x1046d5440>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/auth/register, メソッド: {'POST'}, エンドポイント: <function register_user at 0x105e35d00>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/auth/me, メソッド: {'GET'}, エンドポイント: <function get_current_user_info at 0x106f07f60>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/auth/me, メソッド: {'PUT'}, エンドポイント: <function update_user_info at 0x106f24220>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/tracks/, メソッド: {'GET'}, エンドポイント: <function list_tracks at 0x106f247c0>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/tracks/, メソッド: {'POST'}, エンドポイント: <function create_track at 0x108a26ca0>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/tracks/{track_id}, メソッド: {'GET'}, エンドポイント: <function get_track at 0x108a26fc0>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/tracks/{track_id}, メソッド: {'PUT'}, エンドポイント: <function update_track at 0x108a27560>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/tracks/{track_id}, メソッド: {'DELETE'}, エンドポイント: <function delete_track at 0x108a27740>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/tracks/upload/cover, メソッド: {'POST'}, エンドポイント: <function upload_cover_art at 0x108a279c0>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/tracks/upload/audio, メソッド: {'POST'}, エンドポイント: <function upload_audio_file at 0x108a27c40>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/tracks/artist/{artist_id}, メソッド: {'GET'}, エンドポイント: <function get_artist_tracks at 0x108a27ec0>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/tracks/search, メソッド: {'GET'}, エンドポイント: <function search_tracks at 0x108ab4180>
+2025-03-30 22:29:17,890 - test_server_simple - INFO - ルート: /v1/users/{user_id}/profile, メソッド: {'GET'}, エンドポイント: <function get_user_profile at 0x108ab4400>
+2025-03-30 22:29:17,891 - test_server_simple - INFO - ルート: /v1/users/upload/profile-image, メソッド: {'POST'}, エンドポイント: <function upload_profile_image at 0x108ab4900>
+2025-03-30 22:29:17,891 - test_server_simple - INFO - ルート: /v1/artists/revenue, メソッド: {'GET'}, エンドポイント: <function get_artist_revenue at 0x108ab4e00>
+2025-03-30 22:29:17,891 - test_server_simple - INFO - ルート: /v1/artists/stats, メソッド: {'GET'}, エンドポイント: <function get_artist_stats at 0x108adcc20>
+2025-03-30 22:29:17,891 - test_server_simple - INFO - ルート: /v1/purchases/{purchase_id}, メソッド: {'GET'}, エンドポイント: <function get_purchase at 0x108add9e0>
+2025-03-30 22:29:17,891 - test_server_simple - INFO - ルート: /v1/purchases/track/{track_id}/download, メソッド: {'GET'}, エンドポイント: <function download_purchased_track at 0x10b0f8400>
+2025-03-30 22:29:17,891 - test_server_simple - INFO - ルート: /v1/stream/{track_id}, メソッド: {'POST'}, エンドポイント: <function get_stream_url at 0x10b0f87c0>
+2025-03-30 22:29:17,891 - test_server_simple - INFO - ルート: /v1/stream/{track_id}/play, メソッド: {'POST'}, エンドポイント: <function record_play at 0x10b0f8e00>
+2025-03-30 22:29:17,891 - test_server_simple - INFO - ルート: /direct-test, メソッド: {'GET'}, エンドポイント: <function direct_test_endpoint at 0x10b17a340>
+2025-03-30 22:29:17,896 - test_server_simple - INFO - APIルーターをアプリケーションにマウントしました
+2025-03-30 22:29:17,896 - test_server_simple - INFO - テストサーバーを起動します...
+💻 テストサーバーが http://127.0.0.1:8001 で起動しました
+Ctrl+Cで終了します
+2025-03-30 22:29:17,897 - asyncio - DEBUG - Using selector: KqueueSelector
+INFO:     Started server process [10761]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+INFO:     127.0.0.1:64832 - "GET /test-simple HTTP/1.1" 200 OK
+2025-03-30 22:29:43,603 - app.api.router - INFO - テストエンドポイントが呼び出されました
+INFO:     127.0.0.1:64833 - "GET /api/v1/test HTTP/1.1" 200 OK
+2025-03-30 22:29:43,604 - app.api.router - INFO - デバッグエンドポイントが呼び出されました
+INFO:     127.0.0.1:64834 - "GET /api/v1/debug HTTP/1.1" 200 OK
+2025-03-30 22:29:43,605 - app.api.router - INFO - ダイレクトテストエンドポイントが呼び出されました
+INFO:     127.0.0.1:64835 - "GET /api/direct-test HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64836 - "GET /api/v1/tracks HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:64836 - "GET /api/v1/tracks/ HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1964, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 945, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such table: track
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwaka/Projects/musicapp/indie-music-platform-backend/app/api/v1/tracks.py", line 28, in list_tracks
+    return track_service.get_tracks(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwaka/Projects/musicapp/indie-music-platform-backend/app/services/track_service.py", line 79, in get_tracks
+    results = [dict(row) for row in query.all()]
+                                    ^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2858, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 2365, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 2251, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+           ^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/sql/elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1638, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1843, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1983, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2352, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1964, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/var/pyenv/versions/3.11.10/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 945, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: track
+[SQL: SELECT track.id AS track_id, track.title AS track_title, track.artist_id AS track_artist_id, user.display_name AS artist_name, track.cover_art_url AS track_cover_art_url, track.duration AS track_duration, track.price AS track_price, track.genre AS track_genre, track.release_date AS track_release_date, track.play_count AS track_play_count 
+FROM track JOIN user ON track.artist_id = user.id 
+WHERE track.is_public = 1 ORDER BY track.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (100, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [10761]

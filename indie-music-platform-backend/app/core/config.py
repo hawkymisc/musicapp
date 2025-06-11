@@ -21,7 +21,8 @@ class Settings(BaseSettings):
 
     # CORS設定
     CORS_ORIGINS: List[str] = [
-        "http://localhost:3000",  # フロントエンド開発サーバー
+        "http://localhost:3000",  # React開発サーバー
+        "http://localhost:5173",  # Vite開発サーバー
         "http://localhost:8080",
         "https://yourdomain.com"  # 本番ドメイン
     ]

@@ -1,0 +1,49 @@
+{
+  "timestamp": "2025-03-30T22:06:40.049448",
+  "basic_endpoints": {
+    "health": {
+      "status": "error",
+      "status_code": 404,
+      "response": {
+        "detail": "Not Found"
+      }
+    },
+    "root": {
+      "status": "error",
+      "status_code": 404,
+      "response": {
+        "detail": "Not Found"
+      }
+    }
+  },
+  "v1_endpoints": {
+    "test": {
+      "status": "error",
+      "status_code": 404,
+      "response": {
+        "detail": "Not Found"
+      }
+    },
+    "tracks": {
+      "status": "error",
+      "status_code": 500,
+      "response": {
+        "detail": "サーバー内部エラーが発生しました。"
+      }
+    },
+    "users_me": {
+      "status": "error",
+      "status_code": 404,
+      "response": {
+        "detail": "Not Found"
+      }
+    },
+    "auth_login": {
+      "status": "error",
+      "status_code": 404,
+      "response": {
+        "detail": "Not Found"
+      }
+    }
+  }
+}

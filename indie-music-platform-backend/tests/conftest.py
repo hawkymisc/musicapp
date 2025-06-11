@@ -3,10 +3,25 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
+import sys
+from unittest.mock import patch, MagicMock
 
-from app.db.session import Base, get_db
+# テスト設定を先にインポート
+import tests.test_settings
+
+# Firebaseをモック
+firebase_admin_mock = MagicMock()
+firebase_auth_mock = MagicMock()
+
+patch('firebase_admin.initialize_app', return_value=None).start()
+
+from app.db.session import get_db
 from app.main import app
-from app.models.user import User, UserRole
+
+# モデルのインポート（テーブル生成のため）
+from app.models.base import Base
+from app.models.user import User
+from app.schemas.user import UserRole
 from app.models.track import Track
 import os
 import datetime
@@ -58,8 +73,8 @@ def db():
 @pytest.fixture(scope="function")
 def client():
     # FastAPIのテストクライアント
-    with TestClient(app) as client:
-        yield client
+    with TestClient(app=app) as c:
+        yield c
 
 
 @pytest.fixture(scope="function")
@@ -121,8 +136,8 @@ def test_track(db, test_artist):
 
 # Firebase認証のモック
 @pytest.fixture(scope="function")
-def mock_firebase_auth(monkeypatch):
-    def mock_verify_id_token(token):
+def mock_firebase_auth():
+    def mock_verify_id_token(token, **kwargs):
         if token == "artist_token":
             return {"uid": "firebaseuid_artist"}
         elif token == "listener_token":
@@ -131,7 +146,5 @@ def mock_firebase_auth(monkeypatch):
             raise Exception("Invalid token")
     
     # Firebase認証関数をモック
-    from firebase_admin import auth
-    monkeypatch.setattr(auth, "verify_id_token", mock_verify_id_token)
-
-
+    with patch('firebase_admin.auth.verify_id_token', side_effect=mock_verify_id_token):
+        yield

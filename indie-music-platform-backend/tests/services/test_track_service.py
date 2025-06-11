@@ -10,7 +10,7 @@ def test_get_tracks(db, test_track):
     """
     tracks = track_service.get_tracks(db)
     assert len(tracks) >= 1
-    assert any(track["track_id"] == test_track.id for track in tracks)
+    assert any(track["id"] == test_track.id for track in tracks)
 
 
 def test_get_track(db, test_track):

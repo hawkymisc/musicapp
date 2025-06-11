@@ -13,8 +13,14 @@ def mock_process_payment(monkeypatch):
             "amount": 500
         }
     
-    from app.services import payment
-    monkeypatch.setattr(payment, "process_payment", mock_process)
+    # Stripe PaymentIntent.create をモック
+    def mock_payment_intent_create(*args, **kwargs):
+        class MockPaymentIntent:
+            id = "test_transaction_1234"
+        return MockPaymentIntent()
+    
+    import stripe
+    monkeypatch.setattr(stripe.PaymentIntent, "create", mock_payment_intent_create)
 
 
 def test_purchase_track(client, db, test_track, test_listener, mock_firebase_auth, mock_process_payment):
@@ -24,7 +30,7 @@ def test_purchase_track(client, db, test_track, test_listener, mock_firebase_aut
     purchase_data = {
         "track_id": test_track.id,
         "amount": 500,
-        "payment_method": "credit_card",
+        "payment_method": "CREDIT_CARD",
         "payment_token": "test_payment_token"
     }
     
@@ -54,7 +60,7 @@ def test_get_user_purchases(client, db, test_track, test_listener, mock_firebase
     purchase_data = {
         "track_id": test_track.id,
         "amount": 500,
-        "payment_method": "credit_card",
+        "payment_method": "CREDIT_CARD",
         "payment_token": "test_payment_token"
     }
     

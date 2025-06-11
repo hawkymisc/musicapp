@@ -10,6 +10,36 @@ from app.services import purchase_service
 
 router = APIRouter()
 
+@router.post("/", response_model=Purchase)
+async def purchase_track(
+    purchase_data: PurchaseCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> Any:
+    """
+    楽曲を購入
+    """
+    return purchase_service.create_purchase(
+        db=db,
+        purchase_data=purchase_data,
+        user_id=current_user.id
+    )
+
+
+@router.get("/", response_model=List[PurchaseWithDetails])
+async def get_user_purchases(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> Any:
+    """
+    ユーザーの購入履歴を取得
+    """
+    return purchase_service.get_user_purchases(
+        db=db,
+        user_id=current_user.id
+    )
+
+
 @router.get("/{purchase_id}", response_model=PurchaseWithDetails)
 async def get_purchase(
     purchase_id: str,

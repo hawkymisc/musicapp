@@ -8,10 +8,10 @@ from app.schemas.user import User
 
 
 class PaymentMethod(str, Enum):
-    CREDIT_CARD = "credit_card"
-    PAYPAL = "paypal"
-    APPLE_PAY = "apple_pay"
-    GOOGLE_PAY = "google_pay"
+    CREDIT_CARD = "CREDIT_CARD"
+    PAYPAL = "PAYPAL" 
+    APPLE_PAY = "APPLE_PAY"
+    GOOGLE_PAY = "GOOGLE_PAY"
 
 
 class PurchaseStatus(str, Enum):

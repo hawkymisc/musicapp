@@ -36,6 +36,14 @@ Key architectural patterns:
 **Database:**
 - Create migration: `cd indie-music-platform-backend && alembic revision --autogenerate -m "description"`
 - Run migrations: `cd indie-music-platform-backend && alembic upgrade head`
+- Create seed data: `cd indie-music-platform-backend && python create_seed_data.py`
+- Reset database with seed: `cd indie-music-platform-backend && python reset_database.py --with-seed`
+- Minimal test data: `cd indie-music-platform-backend && python minimal_seed_data.py`
+
+**Frontend Testing:**
+- Unit tests: `cd indie-music-platform-frontend && npm test`
+- E2E tests: `cd indie-music-platform-frontend && npm run test:e2e`
+- E2E with UI: `cd indie-music-platform-frontend && npm run test:e2e:ui`
 
 ## Key File Locations
 

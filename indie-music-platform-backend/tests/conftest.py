@@ -138,9 +138,9 @@ def test_track(db, test_artist):
 @pytest.fixture(scope="function")
 def mock_firebase_auth():
     def mock_verify_id_token(token, **kwargs):
-        if token == "artist_token":
+        if token == "mock_token_artist":
             return {"uid": "firebaseuid_artist"}
-        elif token == "listener_token":
+        elif token == "mock_token_listener":
             return {"uid": "firebaseuid_listener"}
         else:
             raise Exception("Invalid token")

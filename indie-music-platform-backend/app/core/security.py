@@ -67,12 +67,18 @@ async def get_current_user(
         # テストモードの場合は、特別なトークン処理
         if os.environ.get('TESTING') == 'True':
             # モックToken処理
-            if token == "artist_token":
+            if token == "mock_token_artist":
                 firebase_uid = "firebaseuid_artist"
-            elif token == "listener_token":
+            elif token == "mock_token_listener":
                 firebase_uid = "firebaseuid_listener"
+            elif token.startswith("mock_token_"):
+                # テスト用のトークンパターン
+                firebase_uid = token.replace("mock_token_", "")
             else:
-                firebase_uid = None
+                raise HTTPException(
+                    status_code=HTTP_401_UNAUTHORIZED,
+                    detail="無効なテストトークンです"
+                )
         else:
             # 実際のFirebase検証
             try:
@@ -93,17 +99,24 @@ async def get_current_user(
                 detail="ユーザーが見つかりません"
             )
         return user
-    except auth.InvalidIdTokenError:
-        raise HTTPException(
-            status_code=HTTP_401_UNAUTHORIZED,
-            detail="無効なトークンです"
-        )
+        
+    except HTTPException:
+        # HTTPExceptionはそのまま再発生
+        raise
     except Exception as e:
-        logger.error(f"認証エラー: {e}")
-        raise HTTPException(
-            status_code=HTTP_401_UNAUTHORIZED,
-            detail=f"認証エラー: {str(e)}"
-        )
+        # テストモードでは詳細エラーを避ける
+        if os.environ.get('TESTING') == 'True':
+            logger.error(f"認証エラー (テストモード): {e}")
+            raise HTTPException(
+                status_code=HTTP_401_UNAUTHORIZED,
+                detail="認証エラー"
+            )
+        else:
+            logger.error(f"認証エラー: {e}")
+            raise HTTPException(
+                status_code=HTTP_401_UNAUTHORIZED,
+                detail=f"認証エラー: {str(e)}"
+            )
 
 
 def get_current_active_user(

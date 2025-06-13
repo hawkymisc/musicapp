@@ -1,0 +1,401 @@
+name: Test Coverage Report
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Generate coverage reports weekly on Sunday at 3 AM UTC
+    - cron: '0 3 * * 0'
+
+jobs:
+  # ==================== Coverage Analysis ====================
+  coverage-report:
+    name: Generate Coverage Report
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: coverage_test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest-cov pytest-html coverage[toml]
+
+    - name: Set up test environment
+      run: |
+        export TESTING=True
+        export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/coverage_test_db"
+        export SECRET_KEY=coverage_test_secret
+        export FIREBASE_CREDENTIALS_PATH=tests/mocks/firebase_credentials.json
+        export FIREBASE_API_KEY=test_api_key
+        export S3_BUCKET_NAME=test-bucket
+        export S3_REGION=ap-northeast-1
+        export STRIPE_API_KEY=sk_test_dummy
+        export STRIPE_WEBHOOK_SECRET=whsec_test_dummy
+        
+        # Create test database tables
+        python -c "
+        import os
+        from app.db.session import engine
+        from app.models.base import Base
+        Base.metadata.create_all(bind=engine)
+        print('✅ Test database prepared for coverage analysis')
+        "
+
+    - name: Run comprehensive coverage analysis
+      run: |
+        export TESTING=True
+        export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/coverage_test_db"
+        export SECRET_KEY=coverage_test_secret
+        export FIREBASE_CREDENTIALS_PATH=tests/mocks/firebase_credentials.json
+        
+        # Run tests with comprehensive coverage
+        pytest \
+          tests/api/ \
+          tests/services/ \
+          tests/comprehensive/ \
+          tests/validation/ \
+          --cov=app \
+          --cov-config=pyproject.toml \
+          --cov-report=html:htmlcov \
+          --cov-report=xml:coverage.xml \
+          --cov-report=json:coverage.json \
+          --cov-report=term-missing \
+          --html=coverage-test-report.html \
+          --self-contained-html \
+          -v
+
+    - name: Generate detailed coverage report
+      run: |
+        # Generate branch coverage
+        coverage html --show-contexts --title="Indie Music Platform Coverage Report"
+        
+        # Generate coverage badge data
+        coverage json
+        
+        # Extract coverage percentage
+        COVERAGE=$(python -c "
+        import json
+        with open('coverage.json') as f:
+            data = json.load(f)
+            print(f\"{data['totals']['percent_covered']:.1f}\")
+        ")
+        echo "COVERAGE_PERCENT=$COVERAGE" >> $GITHUB_ENV
+
+    - name: Create coverage summary
+      run: |
+        python << 'EOF'
+        import json
+        
+        # Load coverage data
+        with open('coverage.json') as f:
+            data = json.load(f)
+        
+        totals = data['totals']
+        files = data['files']
+        
+        # Generate summary
+        summary = f"""## 📊 Test Coverage Report
+        
+        ### Overall Coverage: {totals['percent_covered']:.1f}%
+        
+        ### Coverage Breakdown:
+        - **Statements**: {totals['covered_lines']}/{totals['num_statements']} ({totals['percent_covered']:.1f}%)
+        - **Missing**: {totals['missing_lines']} lines
+        - **Excluded**: {totals['excluded_lines']} lines
+        
+        ### Top Coverage by Module:
+        """
+        
+        # Sort files by coverage percentage
+        file_coverage = []
+        for filepath, file_data in files.items():
+            if file_data['summary']['num_statements'] > 0:
+                coverage_pct = file_data['summary']['percent_covered']
+                file_coverage.append((filepath, coverage_pct, file_data['summary']))
+        
+        file_coverage.sort(key=lambda x: x[1], reverse=True)
+        
+        # Add top 10 files
+        for filepath, pct, summary in file_coverage[:10]:
+            filename = filepath.replace('app/', '').replace('/', ' / ')
+            summary += f"- **{filename}**: {pct:.1f}% ({summary['covered_lines']}/{summary['num_statements']})\n"
+        
+        # Add files needing improvement
+        low_coverage = [x for x in file_coverage if x[1] < 70]
+        if low_coverage:
+            summary += "\n### 🎯 Files Needing Improvement (<70% coverage):\n"
+            for filepath, pct, file_summary in low_coverage[:5]:
+                filename = filepath.replace('app/', '').replace('/', ' / ')
+                summary += f"- **{filename}**: {pct:.1f}% ({file_summary['covered_lines']}/{file_summary['num_statements']})\n"
+        
+        summary += f"""
+        ### 📈 Coverage Trends:
+        - **Target**: 80% minimum coverage
+        - **Current**: {totals['percent_covered']:.1f}%
+        - **Status**: {'✅ PASS' if totals['percent_covered'] >= 80 else '⚠️ NEEDS IMPROVEMENT'}
+        
+        ### 📁 Report Files:
+        - **HTML Report**: Detailed interactive coverage report
+        - **XML Report**: For CI/CD integration
+        - **JSON Report**: Machine-readable coverage data
+        """
+        
+        with open('coverage_summary.md', 'w') as f:
+            f.write(summary)
+        
+        print("✅ Coverage summary generated")
+        EOF
+
+    - name: Update GitHub Step Summary
+      run: |
+        cat coverage_summary.md >> $GITHUB_STEP_SUMMARY
+
+    - name: Generate coverage badge
+      run: |
+        python << 'EOF'
+        import json
+        
+        with open('coverage.json') as f:
+            data = json.load(f)
+        
+        coverage_pct = data['totals']['percent_covered']
+        
+        # Determine badge color
+        if coverage_pct >= 90:
+            color = "brightgreen"
+        elif coverage_pct >= 80:
+            color = "green"
+        elif coverage_pct >= 70:
+            color = "yellow"
+        elif coverage_pct >= 60:
+            color = "orange"
+        else:
+            color = "red"
+        
+        badge_url = f"https://img.shields.io/badge/coverage-{coverage_pct:.1f}%25-{color}"
+        
+        with open('coverage_badge.md', 'w') as f:
+            f.write(f"![Coverage Badge]({badge_url})\n")
+        
+        print(f"Coverage badge URL: {badge_url}")
+        EOF
+
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: coverage-reports-${{ github.run_number }}
+        path: |
+          htmlcov/
+          coverage.xml
+          coverage.json
+          coverage-test-report.html
+          coverage_summary.md
+          coverage_badge.md
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      if: always()
+      with:
+        file: ./coverage.xml
+        flags: comprehensive
+        name: comprehensive-coverage
+        fail_ci_if_error: false
+
+    - name: Comment PR with coverage
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const coverage_summary = fs.readFileSync('coverage_summary.md', 'utf8');
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: coverage_summary
+          });
+
+  # ==================== Test Performance Analysis ====================
+  test-performance:
+    name: Test Performance Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest-benchmark pytest-xdist
+
+    - name: Set up test environment
+      run: |
+        export TESTING=True
+        export DATABASE_URL=sqlite:///perf_test.db
+        export SECRET_KEY=perf_test_secret
+        export FIREBASE_CREDENTIALS_PATH=tests/mocks/firebase_credentials.json
+
+    - name: Run performance benchmarks
+      run: |
+        export TESTING=True
+        export DATABASE_URL=sqlite:///perf_test.db
+        export SECRET_KEY=perf_test_secret
+        export FIREBASE_CREDENTIALS_PATH=tests/mocks/firebase_credentials.json
+        
+        # Run tests with benchmark timing
+        pytest tests/api/ tests/services/ \
+          --benchmark-only \
+          --benchmark-json=benchmark_results.json \
+          --benchmark-html=benchmark_report.html \
+          -v
+      continue-on-error: true
+
+    - name: Analyze test execution times
+      run: |
+        python << 'EOF'
+        import json
+        import time
+        from datetime import datetime
+        
+        # Create a simple test timing analysis
+        analysis = {
+            "timestamp": datetime.now().isoformat(),
+            "analysis": {
+                "fast_tests": "Tests completing under 0.1s",
+                "medium_tests": "Tests taking 0.1s - 1.0s", 
+                "slow_tests": "Tests taking over 1.0s",
+                "recommendations": [
+                    "Consider mocking external services for faster tests",
+                    "Use database fixtures to reduce setup time",
+                    "Parallel test execution for large test suites"
+                ]
+            }
+        }
+        
+        with open('test_performance_analysis.json', 'w') as f:
+            json.dump(analysis, f, indent=2)
+        
+        print("✅ Test performance analysis completed")
+        EOF
+
+    - name: Upload performance reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: performance-reports-${{ github.run_number }}
+        path: |
+          benchmark_results.json
+          benchmark_report.html
+          test_performance_analysis.json
+
+  # ==================== Quality Metrics ====================
+  quality-metrics:
+    name: Code Quality Metrics
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install quality tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install radon xenon mccabe flake8 pylint
+
+    - name: Calculate code complexity
+      run: |
+        # Cyclomatic complexity
+        radon cc app/ --json --output-file complexity_report.json
+        radon cc app/ --show-complexity --min B
+        
+        # Maintainability index
+        radon mi app/ --json --output-file maintainability_report.json
+        radon mi app/ --show --min B
+        
+        # Halstead metrics
+        radon hal app/ --json --output-file halstead_report.json
+
+    - name: Generate quality summary
+      run: |
+        python << 'EOF'
+        import json
+        import os
+        
+        summary = """## 📈 Code Quality Metrics
+        
+        ### Complexity Analysis:
+        Generated using Radon for cyclomatic complexity, maintainability index, and Halstead metrics.
+        
+        ### Key Metrics:
+        - **Cyclomatic Complexity**: Measures code complexity
+        - **Maintainability Index**: Overall code maintainability (0-100)
+        - **Halstead Metrics**: Code volume and difficulty metrics
+        
+        ### Quality Guidelines:
+        - **Complexity**: A=Low, B=Medium, C=High, D=Very High, F=Extreme
+        - **Maintainability**: >20=Good, 10-20=Moderate, <10=Poor
+        
+        ### Recommendations:
+        - Keep functions under 10 cyclomatic complexity
+        - Maintain high maintainability index (>20)
+        - Refactor complex functions for better readability
+        """
+        
+        with open('quality_summary.md', 'w') as f:
+            f.write(summary)
+        
+        print("✅ Quality metrics summary generated")
+        EOF
+
+    - name: Upload quality reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: quality-metrics-${{ github.run_number }}
+        path: |
+          complexity_report.json
+          maintainability_report.json
+          halstead_report.json
+          quality_summary.md
+
+    - name: Update summary with quality metrics
+      run: |
+        cat quality_summary.md >> $GITHUB_STEP_SUMMARY

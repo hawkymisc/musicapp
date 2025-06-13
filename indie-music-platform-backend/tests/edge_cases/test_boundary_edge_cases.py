@@ -19,6 +19,7 @@ import itertools
 from app.main import app
 from app.db.session import SessionLocal
 from seed_data import create_seed_data
+from tests.conftest import TestingSessionLocal, engine
 
 
 class TestBoundaryEdgeCases:
@@ -28,10 +29,43 @@ class TestBoundaryEdgeCases:
     def setup_class(cls):
         """境界値テストセットアップ"""
         print("⚡ 境界値・エッジケーステスト開始...")
-        create_seed_data()
+        # テスト用データベースでセットアップ
+        from app.models.base import Base
+        from app.models.user import User
+        from app.schemas.user import UserRole
+        import uuid
+        
+        Base.metadata.create_all(bind=engine)
         cls.client = TestClient(app)
-        cls.session = SessionLocal()
+        cls.session = TestingSessionLocal()
+        
+        # テスト用アーティストユーザーを作成
+        cls._create_test_user()
         print("✅ 境界値テスト環境準備完了")
+    
+    @classmethod
+    def _create_test_user(cls):
+        """テスト用ユーザーを作成"""
+        from app.models.user import User
+        from app.schemas.user import UserRole
+        import uuid
+        
+        try:
+            # テスト用アーティスト
+            artist = User(
+                id=str(uuid.uuid4()),
+                email="boundary_test_artist@example.com",
+                firebase_uid="firebaseuid_artist",
+                display_name="Boundary Test Artist",
+                user_role=UserRole.ARTIST,
+                is_verified=True
+            )
+            cls.session.add(artist)
+            cls.session.commit()
+            
+        except Exception as e:
+            print(f"テストユーザー作成エラー: {e}")
+            cls.session.rollback()
     
     @classmethod
     def teardown_class(cls):

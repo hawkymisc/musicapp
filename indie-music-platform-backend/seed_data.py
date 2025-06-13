@@ -21,8 +21,17 @@ from app.models.track import Track
 from app.models.purchase import Purchase, PaymentMethod, PurchaseStatus
 
 
-def create_seed_data():
-    """Seedデータを作成"""
+def create_seed_data(reset_db=False):
+    """Seedデータを作成
+    
+    Args:
+        reset_db (bool): データベースをリセットするかどうか
+    """
+    # データベースリセット
+    if reset_db:
+        print("🗑️ データベースをリセットしています...")
+        Base.metadata.drop_all(bind=engine)
+    
     # テーブルを作成
     print("🔧 データベーステーブルを作成しています...")
     Base.metadata.create_all(bind=engine)
@@ -35,8 +44,10 @@ def create_seed_data():
         # 既存データの確認
         try:
             existing_users = session.query(User).count()
-            if existing_users > 0:
-                print(f"既に{existing_users}件のユーザーが存在します。追加でSeedデータを作成します。")
+            if existing_users > 0 and not reset_db:
+                print(f"既に{existing_users}件のユーザーが存在します。重複を避けるためにスキップします。")
+                print("データベースをリセットしたい場合は create_seed_data(reset_db=True) を使用してください。")
+                return
         except:
             existing_users = 0
         
@@ -392,4 +403,6 @@ def print_summary(session: Session):
 
 
 if __name__ == "__main__":
-    create_seed_data()
+    import sys
+    reset_db = "--reset" in sys.argv or "-r" in sys.argv
+    create_seed_data(reset_db=reset_db)

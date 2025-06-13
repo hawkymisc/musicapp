@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+    volumes:
+      - ./app:/app/app
+      - ./tests/mocks/firebase_credentials.json:/app/tests/mocks/firebase_credentials.json:ro
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - TESTING=False
+      - ENVIRONMENT=development
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=test_password
+      - POSTGRES_DB=indie_music_db
+    ports:
+      - "5433:5432"  # 異なるポートを使用してローカルPostgreSQLと競合回避
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d indie_music_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_test_data:

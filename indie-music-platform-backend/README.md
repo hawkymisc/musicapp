@@ -74,6 +74,9 @@ Firebase プロジェクトからダウンロードした認証情報を配置�
 # 開発環境起動
 docker-compose up -d
 
+# フルテスト環境起動（包括的テスト用）
+docker-compose -f docker-compose.full-test.yml up -d
+
 # データベースマイグレーション実行
 docker-compose exec api alembic upgrade head
 
@@ -102,6 +105,25 @@ pytest tests/edge_cases/                 # 境界値テスト
 
 # カバレッジ付きテスト実行
 pytest --cov=app --cov-report=html
+```
+
+### E2Eテスト実行（Playwright）
+
+```bash
+# Playwrightブラウザインストール
+npm install @playwright/test
+npx playwright install
+
+# E2Eテスト実行（Docker環境必須）
+docker-compose -f docker-compose.full-test.yml up -d
+npx playwright test                      # 全ブラウザテスト
+npx playwright test --reporter=line      # 簡潔出力
+npx playwright test --project=chromium   # Chrome のみ
+
+# テストカテゴリ別実行
+npx playwright test tests/e2e/api-health.spec.js     # ヘルスチェック
+npx playwright test tests/e2e/security-features.spec.js  # セキュリティ
+npx playwright test tests/e2e/performance.spec.js    # パフォーマンス
 ```
 
 ### テストカテゴリ詳細
@@ -324,6 +346,8 @@ git push origin feature/新機能名
 - **API品質**: OpenAPI仕様準拠
 - **コード品質**: 型チェック・リント対応
 - **CI/CD**: GitHub Actions自動化完了
+- **E2Eテスト**: Playwright自動化（66 passed）
+- **Docker環境**: フルテスト環境構築完了
 
 ## 📄 ライセンス
 

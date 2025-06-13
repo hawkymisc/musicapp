@@ -64,59 +64,114 @@ async def get_current_user(
         # Bearerトークンを検証
         token = credentials.credentials
         
-        # テストモードの場合は、特別なトークン処理
+        # 本番環境でのTESTINGモード禁止
         if os.environ.get('TESTING') == 'True':
-            # モックToken処理
+            # テスト環境でのみモック処理を許可
+            # 追加のセキュリティチェック：本番環境での誤用防止
+            if os.environ.get('ENVIRONMENT') == 'production':
+                logger.critical("本番環境でテストモードが有効になっています。セキュリティリスクです。")
+                raise HTTPException(
+                    status_code=HTTP_401_UNAUTHORIZED,
+                    detail="認証設定エラー"
+                )
+            
+            # テスト専用トークン処理（より厳格な検証）
             if token == "mock_token_artist":
                 firebase_uid = "firebaseuid_artist"
             elif token == "mock_token_listener":
                 firebase_uid = "firebaseuid_listener"
-            elif token.startswith("mock_token_"):
-                # テスト用のトークンパターン
+            elif token.startswith("mock_token_") and len(token) > 11:
+                # テスト用のトークンパターン（最小長チェック）
                 firebase_uid = token.replace("mock_token_", "")
+                # firebase_uidの形式検証
+                if not firebase_uid or len(firebase_uid) < 3:
+                    raise HTTPException(
+                        status_code=HTTP_401_UNAUTHORIZED,
+                        detail="無効なテストトークン形式"
+                    )
             else:
+                logger.warning(f"不正なテストトークン試行: {token[:10]}...")
                 raise HTTPException(
                     status_code=HTTP_401_UNAUTHORIZED,
                     detail="無効なテストトークンです"
                 )
         else:
-            # 実際のFirebase検証
+            # 実際のFirebase検証（本番モード）
+            if not token or len(token) < 10:  # 最小トークン長チェック
+                raise HTTPException(
+                    status_code=HTTP_401_UNAUTHORIZED,
+                    detail="無効なトークン形式"
+                )
+            
             try:
+                # Firebase トークン検証
                 decoded_token = auth.verify_id_token(token)
                 firebase_uid = decoded_token.get("uid")
-            except Exception as e:
-                logger.error(f"トークン検証エラー: {e}")
+                
+                # Firebase UIDの検証
+                if not firebase_uid or len(firebase_uid) < 10:
+                    raise HTTPException(
+                        status_code=HTTP_401_UNAUTHORIZED,
+                        detail="無効なユーザーID"
+                    )
+                
+                # トークンの有効期限チェック（Firebaseが自動で行うが念のため）
+                token_exp = decoded_token.get("exp", 0)
+                import time
+                if token_exp < time.time():
+                    raise HTTPException(
+                        status_code=HTTP_401_UNAUTHORIZED,
+                        detail="トークンの有効期限が切れています"
+                    )
+                    
+            except auth.InvalidIdTokenError as e:
+                logger.warning(f"Firebase トークン検証失敗: {str(e)}")
                 raise HTTPException(
                     status_code=HTTP_401_UNAUTHORIZED,
                     detail="無効なトークンです"
+                )
+            except auth.ExpiredIdTokenError:
+                logger.warning("期限切れトークンでのアクセス試行")
+                raise HTTPException(
+                    status_code=HTTP_401_UNAUTHORIZED,
+                    detail="トークンの有効期限が切れています"
+                )
+            except Exception as e:
+                logger.error(f"Firebase認証エラー: {str(e)}")
+                raise HTTPException(
+                    status_code=HTTP_401_UNAUTHORIZED,
+                    detail="認証に失敗しました"
                 )
         
         # DBからユーザー情報を取得
         user = db.query(User).filter(User.firebase_uid == firebase_uid).first()
         if not user:
+            logger.warning(f"存在しないユーザーでのアクセス試行: {firebase_uid}")
             raise HTTPException(
                 status_code=HTTP_401_UNAUTHORIZED,
                 detail="ユーザーが見つかりません"
             )
+        
+        # ユーザーアクティブ状態の基本チェック
+        if hasattr(user, 'is_active') and not user.is_active:
+            logger.warning(f"非アクティブユーザーでのアクセス試行: {user.id}")
+            raise HTTPException(
+                status_code=HTTP_403_FORBIDDEN,
+                detail="アカウントが無効です"
+            )
+            
         return user
         
     except HTTPException:
         # HTTPExceptionはそのまま再発生
         raise
     except Exception as e:
-        # テストモードでは詳細エラーを避ける
-        if os.environ.get('TESTING') == 'True':
-            logger.error(f"認証エラー (テストモード): {e}")
-            raise HTTPException(
-                status_code=HTTP_401_UNAUTHORIZED,
-                detail="認証エラー"
-            )
-        else:
-            logger.error(f"認証エラー: {e}")
-            raise HTTPException(
-                status_code=HTTP_401_UNAUTHORIZED,
-                detail=f"認証エラー: {str(e)}"
-            )
+        # 本番環境では詳細エラー情報を隠す
+        logger.error(f"認証処理中の予期しないエラー: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_401_UNAUTHORIZED,
+            detail="認証に失敗しました"
+        )
 
 
 def get_current_active_user(

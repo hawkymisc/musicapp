@@ -1,0 +1,39 @@
+{
+  "payment": {
+    "enabled": false,
+    "methods_enabled": false,
+    "downloads_enabled": true,
+    "coming_soon_message": "🎵 決済機能は近日公開予定です！現在は全楽曲を無料でお楽しみいただけます。",
+    "test_mode": false,
+    "webhook_enabled": false
+  },
+  "features": {
+    "subscription_plans": false,
+    "live_streaming": false,
+    "social_features": true,
+    "analytics_dashboard": true,
+    "artist_verification": false,
+    "playlist_sharing": true,
+    "comment_system": false,
+    "artist_collaboration": true
+  },
+  "limits": {
+    "max_uploads_per_day": 50,
+    "max_file_size_mb": 100,
+    "free_streaming_limit": 1000,
+    "max_playlist_size": 1000,
+    "api_rate_limit_per_minute": 100
+  },
+  "ui": {
+    "show_coming_soon_banner": true,
+    "enable_beta_features": true,
+    "maintenance_mode": false,
+    "show_purchase_buttons": false,
+    "show_download_buttons": true
+  },
+  "debug": {
+    "enable_detailed_logging": true,
+    "show_debug_info": false,
+    "mock_payment_success": false
+  }
+}

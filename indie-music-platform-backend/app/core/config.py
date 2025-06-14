@@ -42,6 +42,17 @@ class Settings(BaseSettings):
 
     # プラットフォーム手数料
     PLATFORM_FEE_PERCENTAGE: float = 15.0  # 15%
+    
+    # 機能フラグ設定
+    PAYMENT_ENABLED: bool = os.environ.get("PAYMENT_ENABLED", "true").lower() in ("true", "1", "yes", "on")
+    PAYMENT_METHODS_ENABLED: bool = os.environ.get("PAYMENT_METHODS_ENABLED", "true").lower() in ("true", "1", "yes", "on")
+    PURCHASE_DOWNLOADS_ENABLED: bool = os.environ.get("PURCHASE_DOWNLOADS_ENABLED", "true").lower() in ("true", "1", "yes", "on")
+    
+    # 決済機能設定
+    PAYMENT_COMING_SOON_MESSAGE: str = os.environ.get(
+        "PAYMENT_COMING_SOON_MESSAGE", 
+        "決済機能は近日公開予定です。現在は無料でお楽しみいただけます。"
+    )
 
     class Config:
         case_sensitive = True

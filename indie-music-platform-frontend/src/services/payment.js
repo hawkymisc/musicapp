@@ -5,6 +5,23 @@ import api from './api';
  */
 const paymentService = {
   /**
+   * 機能フラグを取得して決済機能が有効かチェック
+   * @returns {Promise<Object>} 機能フラグ情報
+   */
+  checkPaymentFeatures: async () => {
+    try {
+      const response = await api.get('/features/payment');
+      return response.data;
+    } catch (error) {
+      console.error('Feature flags check error:', error);
+      // デフォルトで決済無効として扱う
+      return {
+        enabled: false,
+        coming_soon_message: '決済機能は準備中です。'
+      };
+    }
+  },
+  /**
    * 楽曲購入のための決済処理
    * @param {string} userId - ユーザーID
    * @param {string} trackId - 購入する楽曲ID
@@ -12,6 +29,12 @@ const paymentService = {
    */
   purchaseTrack: async (userId, trackId) => {
     try {
+      // 決済機能の状態をチェック
+      const features = await paymentService.checkPaymentFeatures();
+      if (!features.enabled) {
+        throw new Error(features.coming_soon_message || '決済機能は現在利用できません。');
+      }
+      
       const response = await api.post('/purchases', { userId, trackId });
       return response.data;
     } catch (error) {

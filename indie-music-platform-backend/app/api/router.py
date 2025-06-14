@@ -113,7 +113,8 @@ async def get_music_by_id_compatibility(track_id: str):
 try:
     # v1 APIモジュールをインポート
     logger.info("APIモジュールをインポートしています...")
-    from app.api.v1 import auth, tracks, users, artists, purchases, stream
+    from app.api.v1 import auth, tracks, users, artists, purchases, stream, features
+    from app.core.feature_flags import is_payment_enabled
     
     # 各モジュールのルーターをv1ルーターに登録
     logger.info("各モジュールのルーターを登録しています...")
@@ -121,8 +122,15 @@ try:
     v1_router.include_router(tracks.router, prefix="/tracks", tags=["tracks"])
     v1_router.include_router(users.router, prefix="/users", tags=["users"])
     v1_router.include_router(artists.router, prefix="/artists", tags=["artists"])
-    v1_router.include_router(purchases.router, prefix="/purchases", tags=["purchases"])
     v1_router.include_router(stream.router, prefix="/stream", tags=["stream"])
+    v1_router.include_router(features.router, prefix="/features", tags=["features"])
+    
+    # 決済機能が有効な場合のみ購入エンドポイントを登録
+    if is_payment_enabled():
+        v1_router.include_router(purchases.router, prefix="/purchases", tags=["purchases"])
+        logger.info("決済機能が有効なため、purchasesルーターを登録しました")
+    else:
+        logger.info("決済機能が無効のため、purchasesルーターをスキップしました")
     
     logger.info("すべてのAPIルーターが正常に登録されました")
 except ImportError as e:

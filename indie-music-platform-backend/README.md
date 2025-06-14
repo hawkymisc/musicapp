@@ -227,7 +227,71 @@ python seed_data.py
 
 ## 🚢 デプロイメント
 
-### 本番環境用Dockerイメージ
+### Azure Container Apps デプロイ（推奨）
+
+**完全自動化デプロイメント** - 包括的なスクリプトで簡単デプロイ
+
+#### 🚀 クイックスタート
+
+```bash
+# 1. 前提条件確認
+az login                              # Azure CLI ログイン
+az account show                       # サブスクリプション確認
+
+# 2. Firebase認証情報配置
+# firebase-credentials.json をプロジェクトルートに配置
+
+# 3. 完全自動デプロイ実行
+./deploy/azure-deploy.sh minimal
+```
+
+**作成されるリソース:**
+- PostgreSQL Database (Azure Database for PostgreSQL)
+- Azure Storage Account (音楽ファイル・カバーアート)
+- Azure Container Registry (Docker images)
+- Azure Container Apps (アプリケーション実行環境)
+- 自動SSL証明書・HTTPS化
+
+#### 📊 運用管理スクリプト
+
+```bash
+# ヘルスチェック
+./deploy/health-check.sh              # クイックチェック
+./deploy/health-check.sh full         # 詳細チェック
+./deploy/health-check.sh monitor      # 継続監視
+
+# トラブルシューティング
+./deploy/troubleshoot.sh              # 全体診断
+./deploy/troubleshoot.sh restart      # アプリ再起動
+./deploy/troubleshoot.sh rebuild      # 完全再ビルド
+
+# リソース削除
+./deploy/azure-deploy.sh cleanup      # 全リソース削除
+```
+
+#### 🔧 デプロイスクリプト詳細
+
+各スクリプトの詳細な使用方法: **[deploy/README.md](deploy/README.md)**
+
+**主な機能:**
+- ✅ Azure プロバイダー自動登録
+- ✅ 依存関係エラー自動修正
+- ✅ リビジョン管理・自動切り替え
+- ✅ デプロイ後動作確認
+- ✅ 包括的トラブルシューティング
+- ✅ ログ分析・エラー診断
+
+#### 💰 推定運用コスト
+
+```
+月額: 約¥9,500
+- Container Apps: ¥2,000
+- PostgreSQL: ¥6,000  
+- Storage: ¥1,000
+- Container Registry: ¥500
+```
+
+### 従来のAWS ECS デプロイ
 
 ```bash
 # 本番イメージビルド
@@ -237,8 +301,7 @@ docker build -t indie-music-api:latest .
 docker run -p 8000:8000 --env-file .env.prod indie-music-api:latest
 ```
 
-### AWS ECS デプロイ例
-
+**AWS リソース構成:**
 1. **ECR**: Docker imageをpush
 2. **RDS**: PostgreSQL本番データベース
 3. **ECS**: TaskDefinition + Service作成
@@ -249,7 +312,36 @@ docker run -p 8000:8000 --env-file .env.prod indie-music-api:latest
 
 ## 🐛 トラブルシューティング
 
-### 一般的な問題
+### デプロイ関連問題
+
+**自動診断スクリプト使用（推奨）**
+```bash
+# 包括的問題診断
+./deploy/troubleshoot.sh
+
+# 特定問題の診断
+./deploy/troubleshoot.sh logs      # ログ分析
+./deploy/troubleshoot.sh deps      # 依存関係チェック
+./deploy/troubleshoot.sh network   # ネットワーク診断
+```
+
+**よくあるデプロイエラーと解決策**
+```bash
+# slowapi ModuleNotFoundError
+./deploy/troubleshoot.sh rebuild
+
+# ヘルスチェック失敗
+./deploy/health-check.sh diagnose
+./deploy/troubleshoot.sh restart
+
+# Azure プロバイダー未登録エラー
+# → 自動で解決されます（スクリプト内で自動登録）
+
+# リビジョン切り替え問題
+./deploy/azure-deploy.sh check     # 自動リビジョン管理
+```
+
+### 開発環境問題
 
 **データベース接続エラー**
 ```bash
@@ -259,12 +351,15 @@ docker-compose ps
 docker-compose exec api python -c "from app.db.session import SessionLocal; SessionLocal()"
 ```
 
-**S3アップロードエラー**
+**S3/Azure Storage アップロードエラー**
 ```bash
-# AWS認証情報確認
+# AWS認証情報確認（従来環境）
 aws s3 ls s3://your-bucket-name
-# 権限確認
 aws iam get-user
+
+# Azure Storage確認（新環境）
+az storage account list --output table
+az storage container list --account-name YOUR_STORAGE_ACCOUNT
 ```
 
 **Firebase認証エラー**
@@ -282,6 +377,27 @@ python -c "from app.db.base import Base; from app.db.session import engine; Base
 
 # Seedデータ再作成
 python seed_data.py
+```
+
+### デプロイ監視とログ
+
+**リアルタイム監視**
+```bash
+# 継続的ヘルスチェック
+./deploy/health-check.sh monitor
+
+# リアルタイムログ確認
+az containerapp logs show --name indie-music-api --resource-group indie-music-rg --follow
+```
+
+**デバッグ情報収集**
+```bash
+# 詳細診断レポート生成
+./deploy/troubleshoot.sh > debug-report.txt
+
+# Azure リソース状態確認
+az containerapp show --name indie-music-api --resource-group indie-music-rg
+az containerapp revision list --name indie-music-api --resource-group indie-music-rg
 ```
 
 ## 🤝 コントリビューション
@@ -339,6 +455,9 @@ git push origin feature/新機能名
 - ✅ 収益ダッシュボード
 - ✅ 包括的テスト基盤
 - ✅ セキュリティ対策（OWASP準拠）
+- ✅ **Azure Container Apps 本番デプロイ完了**
+- ✅ **完全自動化デプロイメントスクリプト**
+- ✅ **包括的監視・トラブルシューティング環境**
 
 ### 品質指標
 - **テストカバレッジ**: 70%目標（設定済み）
@@ -348,6 +467,8 @@ git push origin feature/新機能名
 - **CI/CD**: GitHub Actions自動化完了
 - **E2Eテスト**: Playwright自動化（66 passed）
 - **Docker環境**: フルテスト環境構築完了
+- **本番環境**: Azure Container Apps 稼働中
+- **運用管理**: 自動化スクリプト完備
 
 ## 📄 ライセンス
 

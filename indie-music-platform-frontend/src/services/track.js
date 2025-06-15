@@ -4,13 +4,13 @@ import paymentService from './payment';
 // 新着楽曲を取得
 export const getNewReleases = async (limit = 8) => {
   const response = await apiClient.get('/music', { params: { limit, sort: 'newest' } });
-  return response.data;
+  return response.data.data || [];
 };
 
 // おすすめアーティストを取得
 export const getFeaturedArtists = async (limit = 5) => {
   const response = await apiClient.get('/artists/featured', { params: { limit } });
-  return response.data;
+  return response.data.data || [];
 };
 
 // 楽曲詳細を取得

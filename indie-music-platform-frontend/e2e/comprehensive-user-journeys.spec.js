@@ -31,8 +31,10 @@ test.describe('包括的ユーザージャーニーテスト', () => {
   
   // テスト前にSeedデータがロードされていることを確認
   test.beforeEach(async ({ page }) => {
-    // バックエンドヘルスチェック
-    const healthResponse = await page.request.get('http://localhost:8000/');
+    // バックエンドヘルスチェック（環境に応じたURL）
+    const backendUrl = process.env.VITE_API_BASE_URL || 'http://localhost:8000';
+    const healthUrl = backendUrl.replace('/api/v1', '') + '/health';
+    const healthResponse = await page.request.get(healthUrl);
     expect(healthResponse.ok()).toBeTruthy();
   });
 

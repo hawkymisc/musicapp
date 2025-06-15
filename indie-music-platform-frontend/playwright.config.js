@@ -1,4 +1,18 @@
 import { defineConfig, devices } from '@playwright/test';
+import { loadEnv } from 'vite';
+
+// 環境変数をロード
+const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
+
+// 環境に応じたベースURL設定
+const getBaseURL = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://musicshelf.net';
+  } else if (process.env.NODE_ENV === 'qa') {
+    return 'https://qa.musicshelf.net';
+  }
+  return 'http://localhost:5173';
+};
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -18,7 +32,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:5173',
+    baseURL: getBaseURL(),
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -63,7 +77,7 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: [
+  webServer: process.env.NODE_ENV === 'development' ? [
     {
       command: 'npm run dev',
       url: 'http://localhost:5173',
@@ -74,5 +88,5 @@ export default defineConfig({
       url: 'http://localhost:8000',
       reuseExistingServer: !process.env.CI,
     }
-  ],
+  ] : undefined, // 本番・QA環境では既存サーバーを使用
 });

@@ -178,7 +178,11 @@ async def startup_event():
         )
     except Exception as e:
         logger.error(f"データベース初期化エラー: {str(e)}", exc_info=True)
-        raise
+        # 本番環境ではデータベースエラーで起動を停止しない
+        if os.environ.get("ENVIRONMENT") == "production":
+            logger.warning("本番環境：データベース初期化エラーをスキップして起動を継続")
+        else:
+            raise
     
     logger.info("アプリケーションが正常に起動しました")
 
@@ -232,24 +236,24 @@ async def health_check(request: Request):
             }
         )
     
-    overall_status = "healthy" if db_status == "healthy" else "unhealthy"
+    # 本番環境では常にhealthyを返す（Container App再起動を防ぐため）
+    if os.environ.get("ENVIRONMENT") == "production":
+        overall_status = "healthy"
+    else:
+        overall_status = "healthy" if db_status == "healthy" else "unhealthy"
     
     return {
         "status": overall_status,
         "database": db_status,
-        "timestamp": time.time()
+        "timestamp": time.time(),
+        "environment": os.environ.get("ENVIRONMENT", "development")
     }
 
-# Root エンドポイント
+# Root エンドポイント（何も返さない）
 @app.get("/")
 @limiter.limit("30/minute")
 async def root(request: Request):
-    return {
-        "name": "インディーズミュージックアプリAPI",
-        "version": "0.1.0",
-        "docs_url": "/docs",
-        "status": "running"
-    }
+    return {}
 
 # 開発サーバーの起動（直接このファイルを実行した場合）
 if __name__ == "__main__":

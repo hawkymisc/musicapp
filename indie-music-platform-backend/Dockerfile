@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 COPY ./app /app/app
 COPY ./alembic /app/alembic
 COPY ./alembic.ini /app/alembic.ini
+COPY ./firebase-credentials.json /app/firebase-credentials.json
 
 # 環境変数の設定
 ENV PYTHONPATH=/app

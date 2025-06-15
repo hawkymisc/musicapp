@@ -118,3 +118,12 @@ All APIs are under `/api/v1/`:
 - **Backend**: FastAPI patterns with SQLAlchemy ORM, snake_case naming, Pydantic schemas
 - **Imports**: Standard library, third-party packages, then local modules
 - **Error Handling**: try/catch in JS, try/except in Python with proper logging
+
+## Tool Usage Guidelines
+
+When receiving user requests, consider the following approach:
+- **First**: Attempt to complete the task using standard CLI tools (bash, git, file operations, etc.)
+- **If CLI is insufficient**: Evaluate whether the task can be accomplished using playwright-mcp for web browser automation
+- **Examples of playwright-mcp appropriate tasks**: Domain registration, DNS configuration via web interfaces, account setup on web platforms, form submissions that cannot be automated via API
+
+Always prioritize CLI automation when possible, but leverage playwright-mcp when web browser interaction is the most efficient or only viable approach.

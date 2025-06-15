@@ -24,7 +24,13 @@ class Settings(BaseSettings):
         "http://localhost:3000",  # React開発サーバー
         "http://localhost:5173",  # Vite開発サーバー
         "http://localhost:8080",
-        "https://yourdomain.com"  # 本番ドメイン
+        "https://musicshelf.net",  # 本番ドメイン (.netに変更)
+        "https://qa.musicshelf.net",  # QA環境ドメイン (.netに変更)
+        "https://black-plant-0a082b500.2.azurestaticapps.net",  # Azure Static Web Apps 本番
+        "https://black-plant-0a082b500-preview.eastasia.2.azurestaticapps.net",  # Azure Static Web Apps プレビュー
+        "https://zealous-moss-046c5fa00.1.azurestaticapps.net",  # Azure Static Web Apps QA
+        "*black-plant-0a082b500*.azurestaticapps.net",  # Azure Static Web Apps 全環境
+        "*zealous-moss-046c5fa00*.azurestaticapps.net"  # Azure Static Web Apps QA 全環境
     ]
 
     # AWS設定

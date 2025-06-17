@@ -78,21 +78,32 @@ def get_tracks(
     # 結果を辞書形式で取得
     rows = query.all()
     results = []
+    
+    # 空の結果も正常に処理
+    if not rows:
+        return []
+    
     for row in rows:
-        # rowの属性を使って辞書を作成（スキーマに合わせて）
-        result_dict = {
-            "id": row.track_id,
-            "title": row.track_title,
-            "artist_id": row.track_artist_id,
-            "artist_name": row.artist_name,
-            "cover_art_url": row.track_cover_art_url,
-            "duration": row.track_duration,
-            "price": float(row.track_price) if row.track_price else None,
-            "genre": row.track_genre,
-            "release_date": row.track_release_date if row.track_release_date else None,
-            "play_count": row.track_play_count
-        }
-        results.append(result_dict)
+        try:
+            # rowの属性を使って辞書を作成（スキーマに合わせて）
+            result_dict = {
+                "id": row.track_id,
+                "title": row.track_title,
+                "artist_id": row.track_artist_id,
+                "artist_name": row.artist_name,
+                "cover_art_url": row.track_cover_art_url,
+                "duration": row.track_duration,
+                "price": float(row.track_price) if row.track_price else None,
+                "genre": row.track_genre,
+                "release_date": row.track_release_date if row.track_release_date else None,
+                "play_count": row.track_play_count
+            }
+            results.append(result_dict)
+        except Exception as e:
+            # 行処理でエラーが発生した場合はログに記録してスキップ
+            print(f"Error processing track row: {e}")
+            continue
+    
     return results
 
 

@@ -121,6 +121,56 @@ app.include_router(api_router, prefix="/api")
 async def direct_test_endpoint(request: Request):
     return {"message": "直接のテストエンドポイントが動作しています"}
 
+# データベースデバッグ用エンドポイント
+@app.get("/debug/db-status")
+@limiter.limit("5/minute")
+async def debug_db_status(request: Request):
+    try:
+        from app.db.session import SessionLocal
+        from app.models.track import Track
+        from app.models.user import User
+        from sqlalchemy import text
+        
+        db = SessionLocal()
+        
+        # テーブル存在確認
+        tables = db.execute(text("SELECT name FROM sqlite_master WHERE type='table'")).fetchall()
+        table_names = [table[0] for table in tables]
+        
+        # データ数確認
+        track_count = db.query(Track).count()
+        user_count = db.query(User).count()
+        
+        # サンプルトラック取得（最初の1件）
+        sample_track = db.query(Track).first()
+        sample_user = db.query(User).first()
+        
+        db.close()
+        
+        return {
+            "status": "success",
+            "tables": table_names,
+            "track_count": track_count,
+            "user_count": user_count,
+            "sample_track": {
+                "id": sample_track.id if sample_track else None,
+                "title": sample_track.title if sample_track else None,
+                "artist_id": sample_track.artist_id if sample_track else None
+            } if sample_track else None,
+            "sample_user": {
+                "id": sample_user.id if sample_user else None,
+                "display_name": sample_user.display_name if sample_user else None,
+                "user_role": sample_user.user_role if sample_user else None
+            } if sample_user else None
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
+
 # カスタムレート制限エラーハンドラー
 @app.exception_handler(RateLimitExceeded)
 async def rate_limit_handler(request: Request, exc: RateLimitExceeded):

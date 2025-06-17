@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Float, Integer, Boolean, ForeignKey, Date, Text
+from sqlalchemy import Column, String, Float, Integer, Boolean, ForeignKey, Date, Text, Numeric
 from sqlalchemy.orm import relationship
 from app.models.base import Base
 import uuid
@@ -13,7 +13,7 @@ class Track(Base):
     cover_art_url = Column(String, nullable=True)
     audio_file_url = Column(String, nullable=False)
     duration = Column(Integer, nullable=False)  # 秒単位
-    price = Column(Float, nullable=False)
+    price = Column(Numeric(10, 2), nullable=False)
     release_date = Column(Date, nullable=False)
     is_public = Column(Boolean, default=True, nullable=False)
     play_count = Column(Integer, default=0, nullable=False)

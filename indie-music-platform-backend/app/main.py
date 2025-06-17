@@ -171,6 +171,100 @@ async def debug_db_status(request: Request):
             "error_type": type(e).__name__
         }
 
+# 本番環境用Seedデータ作成エンドポイント
+@app.post("/debug/create-seed")
+@limiter.limit("1/hour")  # 厳格に制限
+async def create_production_seed(request: Request):
+    try:
+        from app.db.session import SessionLocal
+        from app.models.track import Track
+        from app.models.user import User
+        from app.schemas.user import UserRole
+        from decimal import Decimal
+        from datetime import date, timedelta
+        import uuid
+        import random
+        
+        db = SessionLocal()
+        
+        # 既存データ確認
+        existing_tracks = db.query(Track).count()
+        existing_users = db.query(User).count()
+        
+        if existing_tracks > 0:
+            db.close()
+            return {
+                "status": "skipped",
+                "message": "データが既に存在します",
+                "existing_tracks": existing_tracks,
+                "existing_users": existing_users
+            }
+        
+        # アーティスト作成
+        artists_data = [
+            {"email": "moonlight.echo@musicshelf.net", "display_name": "Moonlight Echo"},
+            {"email": "urban.soul@musicshelf.net", "display_name": "Urban Soul Collective"},
+            {"email": "acoustic.garden@musicshelf.net", "display_name": "Acoustic Garden"}
+        ]
+        
+        artists = []
+        for data in artists_data:
+            artist = User(
+                email=data["email"],
+                display_name=data["display_name"],
+                firebase_uid=f"prod_uid_{uuid.uuid4().hex[:8]}",
+                user_role=UserRole.ARTIST,
+                is_verified=True
+            )
+            db.add(artist)
+            artists.append(artist)
+        
+        db.flush()
+        
+        # 楽曲作成
+        tracks_data = [
+            {"title": "Midnight Reflections", "genre": "エレクトロニック", "duration": 285, "price": 450.0, "artist_index": 0},
+            {"title": "City Lights Serenade", "genre": "R&B", "duration": 240, "price": 380.0, "artist_index": 1},
+            {"title": "Forest Dawn", "genre": "フォーク", "duration": 220, "price": 320.0, "artist_index": 2}
+        ]
+        
+        tracks = []
+        base_date = date.today() - timedelta(days=30)
+        
+        for i, data in enumerate(tracks_data):
+            track = Track(
+                title=data["title"],
+                description=f"{data['title']}の説明",
+                genre=data["genre"],
+                cover_art_url=f"https://example.com/demo/covers/{data['title'].lower().replace(' ', '_')}.jpg",
+                audio_file_url=f"https://example.com/demo/audio/{data['title'].lower().replace(' ', '_')}.mp3",
+                duration=data["duration"],
+                price=Decimal(str(data["price"])),
+                release_date=base_date + timedelta(days=i * 10),
+                artist_id=artists[data["artist_index"]].id,
+                is_public=True,
+                play_count=random.randint(50, 500)
+            )
+            db.add(track)
+            tracks.append(track)
+        
+        db.commit()
+        db.close()
+        
+        return {
+            "status": "success",
+            "message": "Seedデータを作成しました",
+            "created_artists": len(artists),
+            "created_tracks": len(tracks)
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
+
 # カスタムレート制限エラーハンドラー
 @app.exception_handler(RateLimitExceeded)
 async def rate_limit_handler(request: Request, exc: RateLimitExceeded):

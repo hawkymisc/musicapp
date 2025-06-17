@@ -1,4 +1,7 @@
-from pydantic import BaseSettings
+try:
+    from pydantic_settings import BaseSettings
+except ImportError:
+    from pydantic import BaseSettings
 from typing import List
 import os
 from dotenv import load_dotenv
@@ -11,13 +14,15 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "インディーズミュージックアプリ"
     API_V1_STR: str = "/api/v1"
 
-    # PostgreSQL接続設定
+    # データベース接続設定
+    DATABASE_URL: str = os.environ.get("DATABASE_URL", "sqlite:///./dev.db")
+    
+    # PostgreSQL接続設定（本番環境用）
     POSTGRES_SERVER: str = os.environ.get("POSTGRES_SERVER", "localhost")
     POSTGRES_USER: str = os.environ.get("POSTGRES_USER", "postgres")
     POSTGRES_PASSWORD: str = os.environ.get("POSTGRES_PASSWORD", "postgres")
     POSTGRES_DB: str = os.environ.get("POSTGRES_DB", "indie_music_db")
     POSTGRES_PORT: str = os.environ.get("POSTGRES_PORT", "5432")
-    DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
     # CORS設定
     CORS_ORIGINS: List[str] = [

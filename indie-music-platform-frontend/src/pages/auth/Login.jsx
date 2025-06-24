@@ -1,12 +1,8 @@
 import React from 'react';
+import LoginComponent from '../../components/common/Login';
 
 const Login = () => {
-  return (
-    <div>
-      <h1>ログインページ</h1>
-      {/* ユーザー認証の入り口 */}
-    </div>
-  );
+  return <LoginComponent />;
 };
 
 export default Login;

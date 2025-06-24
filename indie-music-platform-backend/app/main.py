@@ -278,7 +278,7 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
         headers={"Retry-After": str(getattr(exc, 'retry_after', 60))}
     )
 
-# 例外ハンドラー
+# 例外ハンドラー（デバッグ用に詳細表示）
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
     # 構造化ログでエラーを記録
@@ -295,9 +295,18 @@ async def general_exception_handler(request: Request, exc: Exception):
         exc_info=True
     )
     
+    # デバッグ用: 詳細なエラー情報を返す
+    import traceback
     return JSONResponse(
         status_code=500,
-        content={"detail": "サーバー内部エラーが発生しました。"}
+        content={
+            "detail": "サーバー内部エラーが発生しました。",
+            "debug_info": {
+                "error_type": type(exc).__name__,
+                "error_message": str(exc),
+                "traceback": traceback.format_exc()
+            }
+        }
     )
 
 # 静的ファイルの設定（必要な場合）

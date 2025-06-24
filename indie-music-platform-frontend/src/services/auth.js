@@ -1,5 +1,8 @@
 import api from './api';
 
+// モック認証フラグ
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
+
 /**
  * 認証関連のAPI呼び出しを行うサービス
  */
@@ -11,6 +14,21 @@ const authService = {
    * @returns {Promise} ログイン結果
    */
   login: async (email, password) => {
+    if (USE_MOCK) {
+      // モック認証 - デモ用
+      await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒遅延でリアルっぽく
+      return {
+        user: {
+          id: 'mock-user-id',
+          email: email,
+          display_name: 'テストユーザー',
+          user_role: 'listener',
+          is_verified: true
+        },
+        token: 'mock-jwt-token'
+      };
+    }
+    
     try {
       const response = await api.post('/auth/login', { email, password });
       return response.data;
@@ -54,6 +72,20 @@ const authService = {
    * @returns {Promise} ユーザー情報
    */
   getCurrentUser: async () => {
+    if (USE_MOCK) {
+      const token = localStorage.getItem('authToken');
+      if (token === 'mock-jwt-token') {
+        return {
+          id: 'mock-user-id',
+          email: 'test@example.com',
+          display_name: 'テストユーザー',
+          user_role: 'listener',
+          is_verified: true
+        };
+      }
+      return null;
+    }
+    
     try {
       const response = await api.get('/auth/me');
       return response.data;

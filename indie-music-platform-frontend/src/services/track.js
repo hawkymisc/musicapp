@@ -3,8 +3,8 @@ import paymentService from './payment';
 
 // 新着楽曲を取得
 export const getNewReleases = async (limit = 8) => {
-  const response = await apiClient.get('/music', { params: { limit, sort: 'newest' } });
-  return response.data.data || [];
+  const response = await apiClient.get('/api/v1/tracks/', { params: { limit, sort_by: 'created_at', sort_desc: true } });
+  return response.data || [];
 };
 
 // おすすめアーティストを取得
@@ -15,13 +15,13 @@ export const getFeaturedArtists = async (limit = 5) => {
 
 // 楽曲詳細を取得
 export const getTrackById = async (trackId) => {
-  const response = await apiClient.get(`/music/${trackId}`);
+  const response = await apiClient.get(`/api/v1/tracks/${trackId}`);
   return response.data;
 };
 
 // 楽曲検索
 export const searchTracks = async (params) => {
-  const response = await apiClient.get('/music/search', { params });
+  const response = await apiClient.get('/api/v1/tracks/', { params });
   return response.data;
 };
 

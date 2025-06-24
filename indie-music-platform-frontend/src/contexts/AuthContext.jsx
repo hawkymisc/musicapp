@@ -31,16 +31,8 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, []);
 
-  const register = async (email, password, displayName, userType) => {
+  const register = async (userData) => {
     try {
-      const userData = {
-        email,
-        password,
-        displayName,
-        userType,
-        profileImage: ''
-      };
-      
       const result = await authService.register(userData);
       
       // トークンをローカルストレージに保存

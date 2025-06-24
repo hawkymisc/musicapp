@@ -1,5 +1,4 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 import logging
@@ -16,13 +15,17 @@ engine = create_engine(
 # セッションローカルの作成
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# モデルのベースクラス
-Base = declarative_base()
-
-
 # データベーステーブルの作成
 def create_tables():
     try:
+        # モデルのベースクラスをインポート
+        from app.models.base import Base
+        # 全モデルをインポートしてメタデータに登録
+        from app.models.user import User
+        from app.models.track import Track
+        from app.models.purchase import Purchase
+        from app.models.play_history import PlayHistory
+        
         Base.metadata.create_all(bind=engine)
         logger.info("データベーステーブルが正常に作成されました")
     except Exception as e:

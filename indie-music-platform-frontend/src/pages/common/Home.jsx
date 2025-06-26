@@ -7,6 +7,7 @@ import { PlayerContext } from '../../contexts/PlayerContext';
 import { getNewReleases, getFeaturedArtists } from '../../services/track';
 import Header from '../../components/layout/Header';
 import Player from '../../components/player/Player';
+import SkeletonLoader from '../../components/common/SkeletonLoader';
 
 const Container = styled.div`
   padding: 0 0 70px 0; // プレーヤーの高さ分の下部パディング
@@ -14,6 +15,10 @@ const Container = styled.div`
 
 const Content = styled.div`
   padding: 2rem;
+  
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const SectionTitle = styled.h2`
@@ -27,6 +32,16 @@ const TracksGrid = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
 `;
 
 const TrackCard = styled.div`
@@ -228,7 +243,7 @@ const Home = () => {
         
         <TracksGrid>
           {loading ? (
-            <div>読み込み中...</div>
+            <SkeletonLoader type="track-card" count={6} />
           ) : (
             newReleases.map(track => (
               <TrackCard key={track.id}>
@@ -265,7 +280,7 @@ const Home = () => {
         
         <ArtistsGrid>
           {loading ? (
-            <div>読み込み中...</div>
+            <SkeletonLoader type="list-item" count={4} />
           ) : (
             featuredArtists.map(artist => (
               <ArtistCard key={artist.id}>

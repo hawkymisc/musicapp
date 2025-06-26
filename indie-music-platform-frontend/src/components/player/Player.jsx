@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components';
-import { FaPlay, FaPause, FaStepForward, FaStepBackward, FaVolumeUp } from 'react-icons/fa';
+import { FaPlay, FaPause, FaStepForward, FaStepBackward, FaVolumeUp, FaRandom, FaRedoAlt } from 'react-icons/fa';
 import { Howl } from 'howler';
 import { PlayerContext } from '../../contexts/PlayerContext';
 
@@ -55,10 +55,17 @@ const Controls = styled.div`
 const ControlButton = styled.button`
   background: none;
   border: none;
-  color: white;
+  color: ${props => props.active ? '#007bff' : 'white'};
   font-size: 1rem;
   cursor: pointer;
-  margin: 0 1rem;
+  margin: 0 0.5rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: color 0.2s;
+  
+  &:hover {
+    color: #007bff;
+  }
   
   &:focus {
     outline: none;
@@ -117,7 +124,18 @@ const VolumeSlider = styled.input`
 `;
 
 const Player = () => {
-  const { currentTrack, setCurrentTrack, playlist, setPlaylist } = useContext(PlayerContext);
+  const { 
+    currentTrack, 
+    setCurrentTrack, 
+    playlist, 
+    setPlaylist,
+    isShuffled,
+    repeatMode,
+    toggleShuffle,
+    toggleRepeat,
+    playNext,
+    playPrevious
+  } = useContext(PlayerContext);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(0.8);
@@ -144,6 +162,8 @@ const Player = () => {
           setPlaying(false);
           setProgress(0);
           clearInterval(progressTimerRef.current);
+          // 楽曲終了時に次の曲を再生
+          playNext();
         }
       });
       
@@ -207,21 +227,14 @@ const Player = () => {
     setProgress(percentage);
   };
 
-  const handleNext = () => {
-    if (!playlist || playlist.length === 0) return;
-    
-    const currentIndex = playlist.findIndex(track => track.id === currentTrack.id);
-    if (currentIndex < playlist.length - 1) {
-      setCurrentTrack(playlist[currentIndex + 1]);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (!playlist || playlist.length === 0) return;
-    
-    const currentIndex = playlist.findIndex(track => track.id === currentTrack.id);
-    if (currentIndex > 0) {
-      setCurrentTrack(playlist[currentIndex - 1]);
+  const getRepeatIcon = () => {
+    switch (repeatMode) {
+      case 'track':
+        return '🔂';
+      case 'playlist':
+        return '🔁';
+      default:
+        return <FaRedoAlt />;
     }
   };
 
@@ -238,14 +251,24 @@ const Player = () => {
       </TrackInfo>
       
       <Controls>
-        <ControlButton onClick={handlePrevious}>
+        <ControlButton onClick={toggleShuffle} active={isShuffled}>
+          <FaRandom />
+        </ControlButton>
+        
+        <ControlButton onClick={playPrevious}>
           <FaStepBackward />
         </ControlButton>
+        
         <PlayButton onClick={togglePlay}>
           {playing ? <FaPause /> : <FaPlay />}
         </PlayButton>
-        <ControlButton onClick={handleNext}>
+        
+        <ControlButton onClick={playNext}>
           <FaStepForward />
+        </ControlButton>
+        
+        <ControlButton onClick={toggleRepeat} active={repeatMode !== 'none'}>
+          {getRepeatIcon()}
         </ControlButton>
       </Controls>
       

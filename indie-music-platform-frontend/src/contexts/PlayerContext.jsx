@@ -11,6 +11,9 @@ export const PlayerProvider = ({ children }) => {
   const [volume, setVolume] = useState(0.8);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isShuffled, setIsShuffled] = useState(false);
+  const [repeatMode, setRepeatMode] = useState('none'); // 'none', 'track', 'playlist'
+  const [shuffledPlaylist, setShuffledPlaylist] = useState([]);
 
   // 現在の楽曲が変更された時の処理
   useEffect(() => {
@@ -36,13 +39,58 @@ export const PlayerProvider = ({ children }) => {
     }
   }, [currentTrack]);
 
+  // プレイリストをシャッフル
+  const shuffleArray = (array) => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  // シャッフルのON/OFF
+  const toggleShuffle = () => {
+    const newShuffled = !isShuffled;
+    setIsShuffled(newShuffled);
+    
+    if (newShuffled) {
+      // シャッフルON: プレイリストをシャッフル
+      const shuffled = shuffleArray(playlist);
+      setShuffledPlaylist(shuffled);
+    } else {
+      // シャッフルOFF: シャッフルプレイリストをクリア
+      setShuffledPlaylist([]);
+    }
+  };
+
+  // リピートモードの切り替え
+  const toggleRepeat = () => {
+    const modes = ['none', 'track', 'playlist'];
+    const currentIndex = modes.indexOf(repeatMode);
+    const nextIndex = (currentIndex + 1) % modes.length;
+    setRepeatMode(modes[nextIndex]);
+  };
+
   // 次の曲を再生
   const playNext = () => {
     if (!playlist || playlist.length === 0 || !currentTrack) return;
     
-    const currentIndex = playlist.findIndex(track => track.id === currentTrack.id);
-    if (currentIndex < playlist.length - 1) {
-      setCurrentTrack(playlist[currentIndex + 1]);
+    const activePlaylist = isShuffled ? shuffledPlaylist : playlist;
+    const currentIndex = activePlaylist.findIndex(track => track.id === currentTrack.id);
+    
+    if (repeatMode === 'track') {
+      // 現在の曲をリピート
+      setCurrentTrack(currentTrack);
+      return;
+    }
+    
+    if (currentIndex < activePlaylist.length - 1) {
+      // 次の曲へ
+      setCurrentTrack(activePlaylist[currentIndex + 1]);
+    } else if (repeatMode === 'playlist') {
+      // プレイリストの最初に戻る
+      setCurrentTrack(activePlaylist[0]);
     }
   };
 
@@ -50,9 +98,14 @@ export const PlayerProvider = ({ children }) => {
   const playPrevious = () => {
     if (!playlist || playlist.length === 0 || !currentTrack) return;
     
-    const currentIndex = playlist.findIndex(track => track.id === currentTrack.id);
+    const activePlaylist = isShuffled ? shuffledPlaylist : playlist;
+    const currentIndex = activePlaylist.findIndex(track => track.id === currentTrack.id);
+    
     if (currentIndex > 0) {
-      setCurrentTrack(playlist[currentIndex - 1]);
+      setCurrentTrack(activePlaylist[currentIndex - 1]);
+    } else if (repeatMode === 'playlist') {
+      // プレイリストの最後に移動
+      setCurrentTrack(activePlaylist[activePlaylist.length - 1]);
     }
   };
 
@@ -86,9 +139,13 @@ export const PlayerProvider = ({ children }) => {
     volume,
     progress,
     duration,
+    isShuffled,
+    repeatMode,
     playNext,
     playPrevious,
     togglePlay,
+    toggleShuffle,
+    toggleRepeat,
     changeVolume,
     updateProgress,
     updateDuration

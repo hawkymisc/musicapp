@@ -5,11 +5,16 @@ import { FaMusic, FaUpload, FaChartLine, FaEdit } from 'react-icons/fa';
 import { AuthContext } from '../../contexts/AuthContext';
 import { getArtistTracks, getArtistStats } from '../../services/artist';
 import Header from '../../components/layout/Header';
+import SkeletonLoader from '../../components/common/SkeletonLoader';
 
 const Container = styled.div`
   display: flex;
   min-height: 100vh;
   background-color: #f5f5f5;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const Sidebar = styled.div`
@@ -17,6 +22,12 @@ const Sidebar = styled.div`
   background-color: #212529;
   color: white;
   padding-top: 60px; // ヘッダーの高さ分の調整
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    padding-top: 0;
+    order: 2;
+  }
 `;
 
 const SidebarMenu = styled.ul`
@@ -51,6 +62,11 @@ const SidebarMenuItem = styled.li`
 const Content = styled.div`
   flex: 1;
   padding: 80px 2rem 2rem; // ヘッダーの高さ分のトップパディング
+  
+  @media (max-width: 768px) {
+    padding: 80px 1rem 1rem;
+    order: 1;
+  }
 `;
 
 const PageTitle = styled.h1`

@@ -9,4 +9,18 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/test/setup.js',
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          icons: ['react-icons'],
+          styled: ['styled-components'],
+          player: ['howler']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 600
+  }
 })

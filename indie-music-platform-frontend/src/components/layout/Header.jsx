@@ -12,16 +12,30 @@ const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+    height: 56px;
+  }
 `;
 
 const Logo = styled.div`
   font-size: 1.5rem;
   font-weight: bold;
+  
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const Nav = styled.nav`
   display: flex;
   align-items: center;
+  
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+  }
 `;
 
 const NavLink = styled(Link)`
@@ -29,9 +43,20 @@ const NavLink = styled(Link)`
   text-decoration: none;
   margin: 0 1rem;
   font-size: 1rem;
+  white-space: nowrap;
   
   &:hover {
     color: #ffffff;
+  }
+  
+  @media (max-width: 768px) {
+    margin: 0 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 480px) {
+    margin: 0 0.25rem;
+    font-size: 0.8rem;
   }
 `;
 

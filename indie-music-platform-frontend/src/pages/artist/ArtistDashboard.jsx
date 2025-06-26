@@ -6,6 +6,8 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { getArtistTracks, getArtistStats } from '../../services/artist';
 import Header from '../../components/layout/Header';
 import SkeletonLoader from '../../components/common/SkeletonLoader';
+import RevenueChart from '../../components/analytics/RevenueChart';
+import TrackStats from '../../components/analytics/TrackStats';
 
 const Container = styled.div`
   display: flex;
@@ -327,10 +329,16 @@ const ArtistDashboard = () => {
             </StatCard>
           </StatsGrid>
           
+          {/* 収益分析チャート */}
+          <RevenueChart artistId={user?.uid} />
+          
+          {/* 楽曲統計 */}
+          <TrackStats artistId={user?.uid} />
+          
           <SectionTitle>あなたの楽曲</SectionTitle>
           
           {loading ? (
-            <div>読み込み中...</div>
+            <SkeletonLoader type="dashboard" />
           ) : tracks.length === 0 ? (
             <div>
               <p>まだ楽曲がありません。「楽曲をアップロード」ボタンから、最初の楽曲をアップロードしましょう。</p>

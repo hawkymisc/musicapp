@@ -17,7 +17,8 @@ export default defineConfig({
           router: ['react-router-dom'],
           icons: ['react-icons'],
           styled: ['styled-components'],
-          player: ['howler']
+          player: ['howler'],
+          charts: ['chart.js', 'react-chartjs-2']
         }
       }
     },

@@ -80,15 +80,24 @@ This is an indie music platform (インディーズミュージックプラッ�
 **For Artists:**
 - Music upload and management with metadata editing
 - Direct music sales with artist-controlled pricing
-- Revenue dashboard and earnings tracking
+- Advanced analytics dashboard with Chart.js integration
+- Revenue tracking and performance metrics
 - Artist profile management
 - Track statistics and play count monitoring
 
 **For Listeners:**
 - Music discovery, search, and streaming
+- High-quality music player with shuffle/repeat functionality
 - Direct music purchases and downloads
 - Personal music library management
 - Artist profile browsing
+
+**Platform Features:**
+- Responsive design (mobile, tablet, desktop)
+- Real-time analytics and revenue charts
+- Secure authentication with Firebase
+- Performance optimized with chunk splitting
+- Comprehensive testing (35+ unit tests)
 
 ## Core Data Models
 
